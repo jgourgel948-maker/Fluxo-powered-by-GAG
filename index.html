@@ -1,766 +1,149 @@
 <!DOCTYPE html>
-<html lang="pt-AO">
+<html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GAG Visual System — Gestão Integrada Supabase</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Supabase JS Client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    @media print {
-      body { background: white !important; }
-      .no-print { display: none !important; }
-      .print-area { max-width: 100% !important; box-shadow: none !important; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAG Visual System — Gestão Integrada</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+<body class="bg-slate-50 font-sans text-slate-800 pb-20">
 
-<body class="bg-slate-100 text-slate-800">
-
-<div class="max-w-md mx-auto bg-white min-h-screen shadow-xl relative pb-24 print-area">
-
-  <!-- HEADER -->
-  <header class="p-4 border-b bg-white sticky top-0 z-20">
-    <div class="flex justify-between items-center">
-      <div>
-        <h1 class="text-xl font-bold text-slate-900">GAG Visual System</h1>
-        <div class="flex items-center gap-2 mt-1">
-          <span class="text-xs text-slate-500">Marketing Automation</span>
-          <span id="connectionStatus" class="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            Supabase Nuvem
-          </span>
+    <!-- CABEÇALHO / IDENTIDADE VISUAL -->
+    <header class="bg-slate-900 text-white p-4 shadow-lg sticky top-0 z-50">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-indigo-600 text-white p-2 rounded-xl font-black text-lg shadow">GAG</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">GAG Visual System</h1>
+                    <p class="text-xs text-indigo-400 font-medium">Gestão Integrada & Automação</p>
+                </div>
+            </div>
+            <button onclick="toggleAdmin()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition">
+                <i class="fa-solid fa-lock text-indigo-400 mr-1"></i> ADM
+            </button>
         </div>
-      </div>
-      <div class="flex items-center gap-1 text-slate-500 no-print">
-        <button type="button" onclick="showToast('Sem notificações pendentes.')" class="p-2 hover:bg-slate-100 rounded-lg">
-          <i data-lucide="bell" class="w-5 h-5"></i>
-        </button>
-      </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- MÓDULO: DASHBOARD -->
-  <main id="view-dashboard" class="view-section p-4 space-y-6">
-    <section class="flex justify-between items-start">
-      <div>
-        <h2 class="text-lg font-bold text-slate-900">Painel Geral</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Visão consolidada da operação na nuvem.</p>
-      </div>
-    </section>
+    <!-- PAINEL PRINCIPAL -->
+    <main class="max-w-md mx-auto p-4 space-y-6">
 
-    <section class="grid grid-cols-2 gap-3">
-      <div class="p-3.5 bg-blue-50/50 border border-blue-100 rounded-2xl">
-        <p class="text-[11px] font-semibold text-blue-600">Receita Acumulada</p>
-        <p id="dashRevenue" class="text-base font-bold text-slate-900 mt-1">Kz 0</p>
-      </div>
-      <div class="p-3.5 bg-purple-50/50 border border-purple-100 rounded-2xl">
-        <p class="text-[11px] font-semibold text-purple-600">Clientes no CRM</p>
-        <p id="dashClients" class="text-base font-bold text-slate-900 mt-1">0</p>
-      </div>
-      <div class="p-3.5 bg-amber-50/50 border border-amber-100 rounded-2xl">
-        <p class="text-[11px] font-semibold text-amber-600">Propostas Ativas</p>
-        <p id="dashQuotes" class="text-base font-bold text-slate-900 mt-1">0</p>
-      </div>
-      <div class="p-3.5 bg-emerald-50/50 border border-emerald-100 rounded-2xl">
-        <p class="text-[11px] font-semibold text-emerald-600">Projetos em Curso</p>
-        <p id="dashProjects" class="text-base font-bold text-slate-900 mt-1">0</p>
-      </div>
-    </section>
+        <!-- DASHBOARD GENERAL -->
+        <section id="tab-dashboard" class="space-y-4">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900">Painel Geral</h2>
+                <p class="text-xs text-slate-500">Visão consolidada da operação na nuvem Supabase.</p>
+            </div>
 
-    <section class="space-y-3">
-      <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Ações Rápidas</h3>
-      <div class="grid grid-cols-2 gap-2">
-        <button onclick="navigate('crm'); openModal('clientModal')" class="p-3 bg-slate-50 hover:bg-slate-100 rounded-xl text-left border border-slate-100 flex items-center gap-2 text-xs font-semibold text-slate-700">
-          <i data-lucide="user-plus" class="w-4 h-4 text-blue-600"></i> + Novo Cliente
-        </button>
-        <button onclick="navigate('orcamento'); openModal('quoteModal')" class="p-3 bg-slate-50 hover:bg-slate-100 rounded-xl text-left border border-slate-100 flex items-center gap-2 text-xs font-semibold text-slate-700">
-          <i data-lucide="file-text" class="w-4 h-4 text-amber-600"></i> + Criar Proposta
-        </button>
-      </div>
-    </section>
+            <!-- CARDS DE MÉTRICAS -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Receita Total</p>
+                    <p id="metric-revenue" class="text-lg font-black text-slate-800 mt-1">Kz 0</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Clientes CRM</p>
+                    <p id="metric-clients" class="text-lg font-black text-slate-800 mt-1">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Propostas Ativas</p>
+                    <p id="metric-quotes" class="text-lg font-black text-slate-800 mt-1">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Projetos em Curso</p>
+                    <p id="metric-projects" class="text-lg font-black text-slate-800 mt-1">0</p>
+                </div>
+            </div>
 
-    <section>
-      <h3 class="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Resumo Operacional</h3>
-      <div id="dashActivity" class="space-y-2"></div>
-    </section>
-  </main>
+            <!-- AÇÕES RÁPIDAS -->
+            <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100 space-y-2">
+                <p class="text-xs font-bold text-indigo-900 uppercase">Ações Rápidas</p>
+                <div class="flex space-x-2">
+                    <button onclick="switchTab('crm')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold py-2.5 rounded-xl shadow transition">
+                        + Novo Cliente
+                    </button>
+                    <button onclick="switchTab('quotes')" class="flex-1 bg-white hover:bg-slate-50 text-indigo-900 text-xs font-semibold py-2.5 rounded-xl border border-indigo-200 transition">
+                        + Criar Proposta
+                    </button>
+                </div>
+            </div>
+        </section>
 
-  <!-- MÓDULO: CRM -->
-  <main id="view-crm" class="view-section p-4 space-y-6 hidden">
-    <section class="flex justify-between items-center">
-      <div>
-        <h2 class="text-lg font-bold text-slate-900">CRM Clientes</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Gestão de contactos e contas.</p>
-      </div>
-      <button onclick="openModal('clientModal')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5">
-        <i data-lucide="plus" class="w-4 h-4"></i> Cliente
-      </button>
-    </section>
+        <!-- SEÇÃO CRM -->
+        <section id="tab-crm" class="hidden space-y-4">
+            <h2 class="text-xl font-bold text-slate-900">Gestão de Clientes (CRM)</h2>
+            <form id="form-client" onsubmit="addClient(event)" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+                <input type="text" id="client-name" placeholder="Nome do Cliente" required class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-600">
+                <input type="text" id="client-contact" placeholder="Contacto / Email" class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-600">
+                <button type="submit" class="w-full bg-slate-900 text-white font-bold text-xs py-3 rounded-xl hover:bg-slate-800 transition">Registar Cliente</button>
+            </form>
+            <div id="list-clients" class="space-y-2"></div>
+        </section>
 
-    <section id="clientsList" class="space-y-3"></section>
-  </main>
+        <!-- SEÇÃO ORÇAMENTOS -->
+        <section id="tab-quotes" class="hidden space-y-4">
+            <h2 class="text-xl font-bold text-slate-900">Orçamentos & Propostas</h2>
+            <form id="form-quote" onsubmit="addQuote(event)" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+                <input type="text" id="quote-title" placeholder="Título da Proposta" required class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-600">
+                <input type="text" id="quote-client" placeholder="Nome do Cliente" required class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-600">
+                <input type="number" id="quote-amount" placeholder="Valor (Kz)" required class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-600">
+                <button type="submit" class="w-full bg-slate-900 text-white font-bold text-xs py-3 rounded-xl hover:bg-slate-800 transition">Guardar Proposta</button>
+            </form>
+            <div id="list-quotes" class="space-y-2"></div>
+        </section>
 
-  <!-- MÓDULO: ORÇAMENTO -->
-  <main id="view-orcamento" class="view-section p-4 space-y-6 hidden">
-    <section class="flex justify-between items-center">
-      <div>
-        <h2 class="text-lg font-bold text-slate-900">Orçamentos & Propostas</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Controlo comercial e propostas.</p>
-      </div>
-      <button onclick="openModal('quoteModal')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5">
-        <i data-lucide="plus" class="w-4 h-4"></i> Orçamento
-      </button>
-    </section>
+    </main>
 
-    <section id="quotesList" class="space-y-3"></section>
-  </main>
-
-  <!-- MÓDULO: PORTFÓLIO -->
-  <main id="view-portfolio" class="view-section p-4 space-y-6 hidden">
-    <section class="flex justify-between items-center">
-      <div>
-        <h2 class="text-lg font-bold text-slate-900">Portfólio & Projetos</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Acompanhamento dos trabalhos.</p>
-      </div>
-      <button onclick="openModal('projectModal')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5">
-        <i data-lucide="plus" class="w-4 h-4"></i> Projeto
-      </button>
-    </section>
-
-    <section id="projectsList" class="space-y-3"></section>
-  </main>
-
-  <!-- MÓDULO: RELATÓRIOS -->
-  <main id="view-relatorios" class="view-section p-4 space-y-6 hidden">
-    <section class="flex justify-between items-start">
-      <div>
-        <h2 class="text-lg font-bold text-slate-900">Relatórios e Análises</h2>
-        <p class="text-xs text-slate-500 mt-1">Registos financeiros e de desempenho.</p>
-      </div>
-      <button onclick="openModal('createModal')" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5">
-        <i data-lucide="file-plus" class="w-4 h-4"></i> Novo relatório
-      </button>
-    </section>
-
-    <section class="grid grid-cols-2 gap-3">
-      <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
-        <p class="text-[11px] font-medium text-slate-500">Receita Registada</p>
-        <p id="totalRevenue" class="text-lg font-bold text-slate-900 mt-1">Kz 0</p>
-      </div>
-      <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
-        <p class="text-[11px] font-medium text-slate-500">Total Relatórios</p>
-        <p id="totalReports" class="text-lg font-bold text-slate-900 mt-1">0</p>
-      </div>
-    </section>
-
-    <section>
-      <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-        <button data-filter="todos" onclick="setFilter('todos')" class="filter-btn bg-blue-600 text-white font-medium px-3.5 py-1.5 rounded-full text-xs">Todos</button>
-        <button data-filter="financeiro" onclick="setFilter('financeiro')" class="filter-btn bg-slate-100 text-slate-600 font-medium px-3.5 py-1.5 rounded-full text-xs">Financeiro</button>
-        <button data-filter="performance" onclick="setFilter('performance')" class="filter-btn bg-slate-100 text-slate-600 font-medium px-3.5 py-1.5 rounded-full text-xs">Performance</button>
-        <button data-filter="clientes" onclick="setFilter('clientes')" class="filter-btn bg-slate-100 text-slate-600 font-medium px-3.5 py-1.5 rounded-full text-xs">Clientes</button>
-        <button data-filter="projetos" onclick="setFilter('projetos')" class="filter-btn bg-slate-100 text-slate-600 font-medium px-3.5 py-1.5 rounded-full text-xs">Projetos</button>
-      </div>
-    </section>
-
-    <section id="reportsList" class="space-y-3"></section>
-  </main>
-
-  <!-- NAVEGAÇÃO INFERIOR -->
-  <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-100 py-2 px-2 z-30 no-print">
-    <div class="flex items-center justify-around">
-      <button onclick="navigate('dashboard')" id="nav-dashboard" class="nav-btn flex flex-col items-center py-1 text-blue-600">
-        <i data-lucide="layout-grid" class="w-5 h-5"></i>
-        <span class="text-[10px] mt-1 font-medium">Dashboard</span>
-      </button>
-      <button onclick="navigate('crm')" id="nav-crm" class="nav-btn flex flex-col items-center py-1 text-slate-400">
-        <i data-lucide="users" class="w-5 h-5"></i>
-        <span class="text-[10px] mt-1 font-medium">CRM</span>
-      </button>
-      <button onclick="navigate('orcamento')" id="nav-orcamento" class="nav-btn flex flex-col items-center py-1 text-slate-400">
-        <i data-lucide="calculator" class="w-5 h-5"></i>
-        <span class="text-[10px] mt-1 font-medium">Orçamento</span>
-      </button>
-      <button onclick="navigate('portfolio')" id="nav-portfolio" class="nav-btn flex flex-col items-center py-1 text-slate-400">
-        <i data-lucide="folder-kanban" class="w-5 h-5"></i>
-        <span class="text-[10px] mt-1 font-medium">Portfólio</span>
-      </button>
-      <button onclick="navigate('relatorios')" id="nav-relatorios" class="nav-btn flex flex-col items-center py-1 text-slate-400">
-        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-        <span class="text-[10px] mt-1 font-medium">Relatórios</span>
-      </button>
-    </div>
-  </nav>
-
-</div>
-
-<!-- MODAIS -->
-
-<!-- MODAL: CLIENTE -->
-<div id="clientModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 no-print">
-  <div class="bg-white rounded-2xl w-full max-w-md p-5">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="font-bold text-lg text-slate-900">Adicionar Cliente</h3>
-      <button onclick="closeModal('clientModal')"><i data-lucide="x" class="w-5 h-5"></i></button>
-    </div>
-    <form id="clientForm" class="space-y-3">
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Nome do Cliente / Empresa</label>
-        <input id="clientName" required placeholder="Ex.: GAG Corp" class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Contacto / E-mail</label>
-        <input id="clientContact" required placeholder="+244 9..." class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Estado</label>
-        <select id="clientStatus" class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm">
-          <option value="Ativo">Ativo</option>
-          <option value="Prospecção">Prospecção</option>
-          <option value="Inativo">Inativo</option>
-        </select>
-      </div>
-      <div class="flex gap-2 pt-2">
-        <button type="button" onclick="closeModal('clientModal')" class="flex-1 bg-slate-100 text-slate-700 py-2.5 rounded-xl text-sm font-semibold">Cancelar</button>
-        <button type="submit" class="flex-1 bg-blue-600 text-white py-2.5 rounded-xl text-sm font-semibold">Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- MODAL: ORÇAMENTO -->
-<div id="quoteModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 no-print">
-  <div class="bg-white rounded-2xl w-full max-w-md p-5">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="font-bold text-lg text-slate-900">Criar Orçamento</h3>
-      <button onclick="closeModal('quoteModal')"><i data-lucide="x" class="w-5 h-5"></i></button>
-    </div>
-    <form id="quoteForm" class="space-y-3">
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Título do Serviço</label>
-        <input id="quoteTitle" required placeholder="Ex.: Design e Identidade Visual" class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Cliente</label>
-        <input id="quoteClient" required placeholder="Nome do cliente" class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Valor Estimado (Kz)</label>
-        <input id="quoteAmount" type="number" min="0" required placeholder="150000" class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Estado</label>
-        <select id="quoteStatus" class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm">
-          <option value="Pendente">Pendente</option>
-          <option value="Aprovado">Aprovado</option>
-          <option value="Recusado">Recusado</option>
-        </select>
-      </div>
-      <div class="flex gap-2 pt-2">
-        <button type="button" onclick="closeModal('quoteModal')" class="flex-1 bg-slate-100 text-slate-700 py-2.5 rounded-xl text-sm font-semibold">Cancelar</button>
-        <button type="submit" class="flex-1 bg-blue-600 text-white py-2.5 rounded-xl text-sm font-semibold">Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- MODAL: PROJETO -->
-<div id="projectModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 no-print">
-  <div class="bg-white rounded-2xl w-full max-w-md p-5">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="font-bold text-lg text-slate-900">Novo Projeto</h3>
-      <button onclick="closeModal('projectModal')"><i data-lucide="x" class="w-5 h-5"></i></button>
-    </div>
-    <form id="projectForm" class="space-y-3">
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Nome do Projeto</label>
-        <input id="projectName" required placeholder="Ex.: Campanha Redes Sociais" class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Categoria</label>
-        <input id="projectCategory" required placeholder="Ex.: Marketing / Branding" class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Estado do Projeto</label>
-        <select id="projectStatus" class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm">
-          <option value="Em Andamento">Em Andamento</option>
-          <option value="Concluído">Concluído</option>
-          <option value="Planeamento">Planeamento</option>
-        </select>
-      </div>
-      <div class="flex gap-2 pt-2">
-        <button type="button" onclick="closeModal('projectModal')" class="flex-1 bg-slate-100 text-slate-700 py-2.5 rounded-xl text-sm font-semibold">Cancelar</button>
-        <button type="submit" class="flex-1 bg-blue-600 text-white py-2.5 rounded-xl text-sm font-semibold">Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- MODAL: RELATÓRIO -->
-<div id="createModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 no-print">
-  <div class="bg-white rounded-2xl w-full max-w-md p-5">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="font-bold text-lg text-slate-900">Criar Relatório</h3>
-      <button onclick="closeModal('createModal')"><i data-lucide="x" class="w-5 h-5"></i></button>
-    </div>
-    <form id="reportForm" class="space-y-3">
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Nome do relatório</label>
-        <input id="reportName" required placeholder="Ex.: Balanço Mensal" class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Tipo</label>
-        <select id="reportType" class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm">
-          <option value="financeiro">Financeiro</option>
-          <option value="performance">Performance</option>
-          <option value="clientes">Clientes</option>
-          <option value="projetos">Projetos</option>
-        </select>
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Receita Registada (Kz)</label>
-        <input id="reportRevenue" type="number" min="0" value="0" class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Observação</label>
-        <textarea id="reportDescription" rows="3" placeholder="Notas sobre este relatório..." class="w-full mt-1 border border-slate-200 rounded-xl px-3 py-2 text-sm resize-none outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-      </div>
-      <div class="flex gap-2 pt-2">
-        <button type="button" onclick="closeModal('createModal')" class="flex-1 bg-slate-100 text-slate-700 py-2.5 rounded-xl text-sm font-semibold">Cancelar</button>
-        <button type="submit" class="flex-1 bg-blue-600 text-white py-2.5 rounded-xl text-sm font-semibold">Guardar</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<!-- MODAL VISUALIZAÇÃO RELATÓRIO -->
-<div id="viewModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 no-print">
-  <div class="bg-white rounded-2xl w-full max-w-md p-5 max-h-[90vh] overflow-y-auto">
-    <div class="flex justify-between items-center mb-4">
-      <h3 id="viewTitle" class="font-bold text-lg">Relatório</h3>
-      <button onclick="closeModal('viewModal')"><i data-lucide="x" class="w-5 h-5"></i></button>
-    </div>
-    <div id="viewContent"></div>
-    <div class="grid grid-cols-2 gap-2 mt-5">
-      <button onclick="window.print()" class="bg-slate-900 text-white py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2">
-        <i data-lucide="printer" class="w-4 h-4"></i> Imprimir / PDF
-      </button>
-      <button onclick="shareReport()" class="bg-purple-50 text-purple-600 py-2.5 rounded-xl text-sm font-semibold flex items-center justify-center gap-2">
-        <i data-lucide="share-2" class="w-4 h-4"></i> Compartilhar
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- TOAST -->
-<div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-4 py-2.5 rounded-xl shadow-xl hidden z-50"></div>
-
-<script>
-  /* ============================
-     CONEXÃO SUPABASE
-  ============================ */
-  const SUPABASE_URL = "https://kjemvkaxnxeaxdhbjzip.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqZW12a2F4bnhlYXhkaGJqemlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MzY3NjcsImV4cCI6MjEwMjAxMjc2N30.nU-qBcuvpFGcur9pkNWq2mLnIhuVrH3nIfi42f4R3J4";
-  const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  let reports = [];
-  let clients = [];
-  let quotes = [];
-  let projects = [];
-  let currentFilter = 'todos';
-  let currentReportId = null;
-
-  document.addEventListener("DOMContentLoaded", async () => {
-    await fetchAllData();
-    lucide.createIcons();
-  });
-
-  async function fetchAllData() {
-    showToast("A carregar dados do Supabase...");
-    await Promise.all([fetchReports(), fetchClients(), fetchQuotes(), fetchProjects()]);
-    renderAll();
-  }
-
-  /* ============================
-     FETCH SUPABASE
-  ============================ */
-  async function fetchReports() {
-    const { data, error } = await _supabase.from('reports').select('*').order('created_at', { ascending: false });
-    if (!error && data) reports = data;
-  }
-
-  async function fetchClients() {
-    const { data, error } = await _supabase.from('clients').select('*').order('created_at', { ascending: false });
-    if (!error && data) clients = data;
-  }
-
-  async function fetchQuotes() {
-    const { data, error } = await _supabase.from('quotes').select('*').order('created_at', { ascending: false });
-    if (!error && data) quotes = data;
-  }
-
-  async function fetchProjects() {
-    const { data, error } = await _supabase.from('projects').select('*').order('created_at', { ascending: false });
-    if (!error && data) projects = data;
-  }
-
-  function renderAll() {
-    renderDashboard();
-    renderClients();
-    renderQuotes();
-    renderProjects();
-    renderReports();
-  }
-
-  /* ============================
-     NAVEGAÇÃO
-  ============================ */
-  function navigate(viewName) {
-    document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-    document.getElementById(`view-${viewName}`).classList.remove('hidden');
-
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-      btn.classList.remove('text-blue-600');
-      btn.classList.add('text-slate-400');
-    });
-
-    const activeNav = document.getElementById(`nav-${viewName}`);
-    if (activeNav) {
-      activeNav.classList.remove('text-slate-400');
-      activeNav.classList.add('text-blue-600');
-    }
-
-    lucide.createIcons();
-  }
-
-  /* ============================
-     DASHBOARD
-  ============================ */
-  function renderDashboard() {
-    const totalRev = reports.reduce((s, r) => s + Number(r.revenue || 0), 0);
-    document.getElementById('dashRevenue').textContent = "Kz " + totalRev.toLocaleString('pt-AO');
-    document.getElementById('dashClients').textContent = clients.length;
-    document.getElementById('dashQuotes').textContent = quotes.length;
-    document.getElementById('dashProjects').textContent = projects.length;
-
-    const activity = document.getElementById('dashActivity');
-    if (!reports.length && !clients.length && !quotes.length && !projects.length) {
-      activity.innerHTML = `<div class="p-4 border border-dashed rounded-xl text-center text-xs text-slate-400">Nenhum registo no banco de dados.</div>`;
-      return;
-    }
-
-    let itemsHtml = '';
-    reports.slice(0, 2).forEach(r => {
-      itemsHtml += `<div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center text-xs">
-        <div><p class="font-bold text-slate-800">${escapeHTML(r.name)}</p><p class="text-[10px] text-slate-400">Relatório · Kz ${Number(r.revenue).toLocaleString('pt-AO')}</p></div>
-        <span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Nuvem</span>
-      </div>`;
-    });
-
-    clients.slice(0, 2).forEach(c => {
-      itemsHtml += `<div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center text-xs">
-        <div><p class="font-bold text-slate-800">${escapeHTML(c.name)}</p><p class="text-[10px] text-slate-400">Cliente · ${escapeHTML(c.contact)}</p></div>
-        <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">${c.status}</span>
-      </div>`;
-    });
-
-    activity.innerHTML = itemsHtml;
-  }
-
-  /* ============================
-     CRM
-  ============================ */
-  document.getElementById('clientForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const payload = {
-      name: document.getElementById('clientName').value.trim(),
-      contact: document.getElementById('clientContact').value.trim(),
-      status: document.getElementById('clientStatus').value
-    };
-    const { error } = await _supabase.from('clients').insert([payload]);
-    if (!error) {
-      showToast('Cliente guardado na nuvem.');
-      closeModal('clientModal');
-      this.reset();
-      await fetchClients();
-      renderAll();
-    } else {
-      showToast('Erro ao guardar cliente.');
-    }
-  });
-
-  function renderClients() {
-    const list = document.getElementById('clientsList');
-    if (!clients.length) {
-      list.innerHTML = `<div class="p-8 border border-dashed rounded-2xl text-center text-xs text-slate-400">Sem clientes registados no Supabase.</div>`;
-      return;
-    }
-    list.innerHTML = clients.map(c => `
-      <div class="p-4 bg-white rounded-2xl border border-slate-100 flex justify-between items-center shadow-sm">
-        <div>
-          <h4 class="font-bold text-sm text-slate-900">${escapeHTML(c.name)}</h4>
-          <p class="text-xs text-slate-400 mt-0.5">${escapeHTML(c.contact)}</p>
+    <!-- NAVEGAÇÃO INFERIOR -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-2 z-50">
+        <div class="max-w-md mx-auto flex justify-around">
+            <button onclick="switchTab('dashboard')" class="flex flex-col items-center text-indigo-600 text-xs font-semibold">
+                <i class="fa-solid fa-chart-pie text-lg mb-0.5"></i> Painel
+            </button>
+            <button onclick="switchTab('crm')" class="flex flex-col items-center text-slate-400 hover:text-indigo-600 text-xs font-semibold">
+                <i class="fa-solid fa-users text-lg mb-0.5"></i> CRM
+            </button>
+            <button onclick="switchTab('quotes')" class="flex flex-col items-center text-slate-400 hover:text-indigo-600 text-xs font-semibold">
+                <i class="fa-solid fa-file-invoice text-lg mb-0.5"></i> Orçamento
+            </button>
         </div>
-        <div class="flex items-center gap-2">
-          <span class="text-[10px] font-semibold bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full">${c.status}</span>
-          <button onclick="deleteClient('${c.id}')" class="text-red-400 hover:text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-        </div>
-      </div>
-    `).join('');
-    lucide.createIcons();
-  }
+    </nav>
 
-  async function deleteClient(id) {
-    if (confirm('Remover este cliente da nuvem?')) {
-      await _supabase.from('clients').delete().eq('id', id);
-      await fetchClients();
-      renderAll();
-      showToast('Cliente removido.');
-    }
-  }
+    <script>
+        // LIGAÇÃO SUPABASE
+        const SUPABASE_URL = "https://kjemvkaxnxeaxdhbjzip.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqZW12a2F4bnhlYXhkaGJqemlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MzY3NjcsImV4cCI6MjEwMjAxMjc2N30.nU-qBcuvpFGcur9pkNWq2mLnIhuVrH3nIfi42f4R3J4";
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  /* ============================
-     ORÇAMENTOS
-  ============================ */
-  document.getElementById('quoteForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const payload = {
-      title: document.getElementById('quoteTitle').value.trim(),
-      client: document.getElementById('quoteClient').value.trim(),
-      amount: Number(document.getElementById('quoteAmount').value || 0),
-      status: document.getElementById('quoteStatus').value
-    };
-    const { error } = await _supabase.from('quotes').insert([payload]);
-    if (!error) {
-      showToast('Orçamento guardado na nuvem.');
-      closeModal('quoteModal');
-      this.reset();
-      await fetchQuotes();
-      renderAll();
-    } else {
-      showToast('Erro ao guardar orçamento.');
-    }
-  });
+        function switchTab(tabName) {
+            document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+        }
 
-  function renderQuotes() {
-    const list = document.getElementById('quotesList');
-    if (!quotes.length) {
-      list.innerHTML = `<div class="p-8 border border-dashed rounded-2xl text-center text-xs text-slate-400">Sem orçamentos registados no Supabase.</div>`;
-      return;
-    }
-    list.innerHTML = quotes.map(q => `
-      <div class="p-4 bg-white rounded-2xl border border-slate-100 space-y-2 shadow-sm">
-        <div class="flex justify-between items-start">
-          <div>
-            <h4 class="font-bold text-sm text-slate-900">${escapeHTML(q.title)}</h4>
-            <p class="text-xs text-slate-400">Cliente: ${escapeHTML(q.client)}</p>
-          </div>
-          <span class="text-[10px] font-semibold bg-amber-50 text-amber-600 px-2.5 py-1 rounded-full">${q.status}</span>
-        </div>
-        <div class="flex justify-between items-center pt-2 border-t border-slate-50 text-xs">
-          <span class="font-bold text-slate-900">Kz ${Number(q.amount).toLocaleString('pt-AO')}</span>
-          <button onclick="deleteQuote('${q.id}')" class="text-red-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-        </div>
-      </div>
-    `).join('');
-    lucide.createIcons();
-  }
+        function toggleAdmin() {
+            const pass = prompt("Digite a Senha de Administrador:");
+            if (pass === "1234" || pass === "gagvisual") {
+                alert("Modo Administrador Ativado!");
+            } else if(pass !== null) {
+                alert("Senha Incorreta!");
+            }
+        }
 
-  async function deleteQuote(id) {
-    if (confirm('Remover orçamento da nuvem?')) {
-      await _supabase.from('quotes').delete().eq('id', id);
-      await fetchQuotes();
-      renderAll();
-      showToast('Orçamento removido.');
-    }
-  }
+        // CARREGAR DADOS
+        async function loadData() {
+            const { data: clients } = await _supabase.from('clients').select('*');
+            const { data: quotes } = await _supabase.from('quotes').select('*');
+            
+            if (clients) document.getElementById('metric-clients').innerText = clients.length;
+            if (quotes) {
+                document.getElementById('metric-quotes').innerText = quotes.length;
+                let total = quotes.reduce((acc, q) => acc + Number(q.amount || 0), 0);
+                document.getElementById('metric-revenue').innerText = "Kz " + total.toLocaleString();
+            }
+        }
 
-  /* ============================
-     PORTFÓLIO
-  ============================ */
-  document.getElementById('projectForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const payload = {
-      name: document.getElementById('projectName').value.trim(),
-      category: document.getElementById('projectCategory').value.trim(),
-      status: document.getElementById('projectStatus').value
-    };
-    const { error } = await _supabase.from('projects').insert([payload]);
-    if (!error) {
-      showToast('Projeto guardado na nuvem.');
-      closeModal('projectModal');
-      this.reset();
-      await fetchProjects();
-      renderAll();
-    } else {
-      showToast('Erro ao guardar projeto.');
-    }
-  });
-
-  function renderProjects() {
-    const list = document.getElementById('projectsList');
-    if (!projects.length) {
-      list.innerHTML = `<div class="p-8 border border-dashed rounded-2xl text-center text-xs text-slate-400">Sem projetos em portfólio.</div>`;
-      return;
-    }
-    list.innerHTML = projects.map(p => `
-      <div class="p-4 bg-white rounded-2xl border border-slate-100 flex justify-between items-center shadow-sm">
-        <div>
-          <h4 class="font-bold text-sm text-slate-900">${escapeHTML(p.name)}</h4>
-          <p class="text-xs text-slate-400 mt-0.5">${escapeHTML(p.category)}</p>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-[10px] font-semibold bg-purple-50 text-purple-600 px-2.5 py-1 rounded-full">${p.status}</span>
-          <button onclick="deleteProject('${p.id}')" class="text-red-400 hover:text-red-600 p-1"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-        </div>
-      </div>
-    `).join('');
-    lucide.createIcons();
-  }
-
-  async function deleteProject(id) {
-    if (confirm('Remover projeto da nuvem?')) {
-      await _supabase.from('projects').delete().eq('id', id);
-      await fetchProjects();
-      renderAll();
-      showToast('Projeto removido.');
-    }
-  }
-
-  /* ============================
-     RELATÓRIOS
-  ============================ */
-  document.getElementById('reportForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const payload = {
-      name: document.getElementById('reportName').value.trim(),
-      type: document.getElementById('reportType').value,
-      revenue: Number(document.getElementById('reportRevenue').value || 0),
-      description: document.getElementById('reportDescription').value.trim()
-    };
-    const { error } = await _supabase.from('reports').insert([payload]);
-    if (!error) {
-      showToast('Relatório registado no Supabase.');
-      closeModal('createModal');
-      this.reset();
-      await fetchReports();
-      renderAll();
-    } else {
-      showToast('Erro ao gravar relatório.');
-    }
-  });
-
-  function renderReports() {
-    const list = document.getElementById('reportsList');
-    const totalRev = reports.reduce((s, r) => s + Number(r.revenue || 0), 0);
-
-    document.getElementById('totalReports').textContent = reports.length;
-    document.getElementById('totalRevenue').textContent = "Kz " + totalRev.toLocaleString('pt-AO');
-
-    let filtered = currentFilter === 'todos' ? reports : reports.filter(r => r.type === currentFilter);
-
-    if (!filtered.length) {
-      list.innerHTML = `<div class="p-8 border border-dashed rounded-2xl text-center text-xs text-slate-400">Nenhum relatório nesta categoria.</div>`;
-      return;
-    }
-
-    list.innerHTML = filtered.map(r => `
-      <div class="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm space-y-3">
-        <div class="flex justify-between items-start">
-          <div>
-            <h4 class="font-bold text-sm text-slate-900">${escapeHTML(r.name)}</h4>
-            <p class="text-[11px] text-slate-400 capitalize">${r.type} · ${new Date(r.created_at || Date.now()).toLocaleDateString('pt-AO')}</p>
-          </div>
-          <span class="font-bold text-xs text-slate-900">Kz ${Number(r.revenue).toLocaleString('pt-AO')}</span>
-        </div>
-        ${r.description ? `<p class="text-xs text-slate-500 leading-relaxed">${escapeHTML(r.description)}</p>` : ''}
-        <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-50">
-          <button onclick="viewReport('${r.id}')" class="py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs rounded-lg flex items-center justify-center gap-1"><i data-lucide="eye" class="w-3.5 h-3.5"></i> Ver</button>
-          <button onclick="deleteReport('${r.id}')" class="py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs rounded-lg flex items-center justify-center gap-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Apagar</button>
-        </div>
-      </div>
-    `).join('');
-    lucide.createIcons();
-  }
-
-  function setFilter(filter) {
-    currentFilter = filter;
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      const active = btn.dataset.filter === filter;
-      btn.classList.toggle('bg-blue-600', active);
-      btn.classList.toggle('text-white', active);
-      btn.classList.toggle('bg-slate-100', !active);
-      btn.classList.toggle('text-slate-600', !active);
-    });
-    renderReports();
-  }
-
-  function viewReport(id) {
-    const report = reports.find(r => r.id === id);
-    if (!report) return;
-    currentReportId = id;
-    document.getElementById('viewTitle').textContent = report.name;
-    document.getElementById('viewContent').innerHTML = `
-      <div class="space-y-3 text-xs">
-        <div><p class="text-slate-400">Tipo</p><p class="font-bold capitalize">${report.type}</p></div>
-        <div><p class="text-slate-400">Receita Registada</p><p class="font-bold text-sm text-slate-900">Kz ${Number(report.revenue).toLocaleString('pt-AO')}</p></div>
-        <div><p class="text-slate-400">Observações</p><p class="bg-slate-50 p-3 rounded-xl mt-1 text-slate-600 leading-relaxed">${escapeHTML(report.description || 'Sem observações.')}</p></div>
-      </div>
-    `;
-    openModal('viewModal');
-  }
-
-  async function deleteReport(id) {
-    if (confirm('Remover este relatório da nuvem?')) {
-      await _supabase.from('reports').delete().eq('id', id);
-      await fetchReports();
-      renderAll();
-      showToast('Relatório removido.');
-    }
-  }
-
-  async function shareReport() {
-    const report = reports.find(r => r.id === currentReportId);
-    if (!report) return;
-    const text = `GAG Visual System\n${report.name}\nReceita: Kz ${Number(report.revenue).toLocaleString('pt-AO')}`;
-    if (navigator.share) {
-      try { await navigator.share({ title: report.name, text }); } catch (e) {}
-    } else {
-      await navigator.clipboard.writeText(text);
-      showToast('Dados copiados.');
-    }
-  }
-
-  /* ============================
-     UTILITÁRIOS & MODAIS
-  ============================ */
-  function openModal(id) {
-    const m = document.getElementById(id);
-    m.classList.remove('hidden'); m.classList.add('flex');
-    lucide.createIcons();
-  }
-
-  function closeModal(id) {
-    const m = document.getElementById(id);
-    m.classList.add('hidden'); m.classList.remove('flex');
-  }
-
-  function escapeHTML(str) {
-    return String(str || '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-  }
-
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.remove('hidden');
-    setTimeout(() => t.classList.add('hidden'), 2800);
-  }
-</script>
-
+        window.onload = loadData;
+    </script>
 </body>
 </html>
