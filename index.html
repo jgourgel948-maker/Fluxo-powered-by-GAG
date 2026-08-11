@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-<body class="bg-slate-50 font-sans text-slate-800 pb-20">
+<body class="bg-slate-50 font-sans text-slate-800 pb-24">
 
     <!-- CABEÇALHO -->
     <header class="bg-slate-900 text-white p-4 shadow-lg sticky top-0 z-50">
@@ -17,7 +17,7 @@
                 <div class="bg-indigo-600 text-white p-2 rounded-xl font-black text-lg shadow">GAG</div>
                 <div>
                     <h1 class="font-bold text-lg leading-tight">GAG Visual System</h1>
-                    <p class="text-xs text-indigo-400 font-medium">Gestão Integrada & Automação</p>
+                    <p class="text-xs text-indigo-400 font-medium">Marketing Automation • Local</p>
                 </div>
             </div>
             <button onclick="toggleAdmin()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700 transition">
@@ -29,39 +29,32 @@
     <!-- CONTEÚDO PRINCIPAL -->
     <main class="max-w-md mx-auto p-4 space-y-6">
 
-        <!-- PAINEL GERAL -->
+        <!-- PAINEL / DASHBOARD -->
         <section id="tab-dashboard" class="space-y-4">
             <div>
-                <h2 class="text-xl font-bold text-slate-900">Painel Geral</h2>
-                <p class="text-xs text-slate-500">Sincronizado em tempo real com o Supabase.</p>
+                <h2 class="text-xl font-bold text-slate-900">Relatórios e Análises</h2>
+                <p class="text-xs text-slate-500">Acompanhe o desempenho real do negócio e da nuvem Supabase.</p>
             </div>
 
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                    <p class="text-xs font-semibold text-slate-400 uppercase">Receita Total</p>
+                    <p class="text-xs font-semibold text-slate-400 uppercase">Receita Registada</p>
                     <p id="metric-revenue" class="text-lg font-black text-slate-800 mt-1">Kz 0</p>
                 </div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                    <p class="text-xs font-semibold text-slate-400 uppercase">Clientes CRM</p>
-                    <p id="metric-clients" class="text-lg font-black text-slate-800 mt-1">0</p>
-                </div>
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                    <p class="text-xs font-semibold text-slate-400 uppercase">Orçamentos</p>
-                    <p id="metric-quotes" class="text-lg font-black text-slate-800 mt-1">0</p>
-                </div>
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                    <p class="text-xs font-semibold text-slate-400 uppercase">Projetos</p>
-                    <p id="metric-projects" class="text-lg font-black text-slate-800 mt-1">0</p>
+                    <p class="text-xs font-semibold text-slate-400 uppercase">Relatórios</p>
+                    <p id="metric-reports" class="text-lg font-black text-slate-800 mt-1">0</p>
                 </div>
             </div>
 
-            <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100 space-y-2">
-                <p class="text-xs font-bold text-indigo-900 uppercase">Atalhos</p>
-                <div class="flex space-x-2">
-                    <button onclick="switchTab('crm')" class="flex-1 bg-indigo-600 text-white text-xs font-semibold py-2.5 rounded-xl shadow">Novo Cliente</button>
-                    <button onclick="switchTab('quotes')" class="flex-1 bg-white text-indigo-900 text-xs font-semibold py-2.5 rounded-xl border border-indigo-200">Novo Orçamento</button>
-                </div>
-            </div>
+            <!-- REGISTAR RELATÓRIO / DADOS -->
+            <form onsubmit="addReport(event)" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+                <p class="text-xs font-bold text-slate-800 uppercase">Novo Registo Financeiro</p>
+                <input type="text" id="report-name" placeholder="Descrição do Relatório" required class="w-full text-xs p-3 rounded-xl border border-slate-200">
+                <input type="number" id="report-revenue" placeholder="Valor (Kz)" required class="w-full text-xs p-3 rounded-xl border border-slate-200">
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-3 rounded-xl transition">Guardar no Supabase</button>
+            </form>
+            <div id="list-reports" class="space-y-2"></div>
         </section>
 
         <!-- SECÇÃO CRM -->
@@ -89,17 +82,17 @@
 
     </main>
 
-    <!-- MENU INFERIOR -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-2 z-50">
+    <!-- MENU DE NAVEGAÇÃO INFERIOR -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-3 z-50">
         <div class="max-w-md mx-auto flex justify-around">
-            <button onclick="switchTab('dashboard')" id="nav-dash" class="flex flex-col items-center text-indigo-600 text-xs font-semibold">
-                <i class="fa-solid fa-chart-pie text-lg mb-0.5"></i> Painel
+            <button onclick="switchTab('dashboard')" id="btn-dash" class="flex flex-col items-center text-indigo-600 text-xs font-semibold">
+                <i class="fa-solid fa-chart-pie text-lg mb-0.5"></i> Dashboard
             </button>
-            <button onclick="switchTab('crm')" id="nav-crm" class="flex flex-col items-center text-slate-400 text-xs font-semibold">
+            <button onclick="switchTab('crm')" id="btn-crm" class="flex flex-col items-center text-slate-400 text-xs font-semibold">
                 <i class="fa-solid fa-users text-lg mb-0.5"></i> CRM
             </button>
-            <button onclick="switchTab('quotes')" id="nav-quotes" class="flex flex-col items-center text-slate-400 text-xs font-semibold">
-                <i class="fa-solid fa-file-invoice text-lg mb-0.5"></i> Orçamentos
+            <button onclick="switchTab('quotes')" id="btn-quotes" class="flex flex-col items-center text-slate-400 text-xs font-semibold">
+                <i class="fa-solid fa-file-invoice text-lg mb-0.5"></i> Orçamento
             </button>
         </div>
     </nav>
@@ -112,14 +105,37 @@
         function switchTab(tabName) {
             document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
             document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+            // Atualizar cores dos botões inferiores
+            ['dash', 'crm', 'quotes'].forEach(t => {
+                const btn = document.getElementById(`btn-${t}`);
+                if(btn) {
+                    btn.className = t === tabName ? "flex flex-col items-center text-indigo-600 text-xs font-semibold" : "flex flex-col items-center text-slate-400 text-xs font-semibold";
+                }
+            });
         }
 
         function toggleAdmin() {
             const pass = prompt("Digite a Senha de Administrador:");
             if (pass === "1234" || pass === "gagvisual") {
-                alert("Modo Administrador Ativado!");
+                alert("Modo Administrador Ativado com Sucesso!");
             } else if(pass !== null) {
                 alert("Senha Incorreta!");
+            }
+        }
+
+        // ADICIONAR RELATÓRIO
+        async function addReport(e) {
+            e.preventDefault();
+            const name = document.getElementById('report-name').value;
+            const revenue = parseFloat(document.getElementById('report-revenue').value);
+
+            const { error } = await _supabase.from('reports').insert([{ name, revenue }]);
+            if (error) alert("Erro: " + error.message);
+            else {
+                document.getElementById('report-name').value = '';
+                document.getElementById('report-revenue').value = '';
+                loadData();
             }
         }
 
@@ -130,10 +146,8 @@
             const contact = document.getElementById('client-contact').value;
 
             const { error } = await _supabase.from('clients').insert([{ name, contact }]);
-            if (error) {
-                alert("Erro ao gravar: " + error.message);
-            } else {
-                alert("Cliente registado com sucesso!");
+            if (error) alert("Erro: " + error.message);
+            else {
                 document.getElementById('client-name').value = '';
                 document.getElementById('client-contact').value = '';
                 loadData();
@@ -148,10 +162,8 @@
             const amount = parseFloat(document.getElementById('quote-amount').value);
 
             const { error } = await _supabase.from('quotes').insert([{ title, client, amount }]);
-            if (error) {
-                alert("Erro ao gravar: " + error.message);
-            } else {
-                alert("Proposta guardada com sucesso!");
+            if (error) alert("Erro: " + error.message);
+            else {
                 document.getElementById('quote-title').value = '';
                 document.getElementById('quote-client').value = '';
                 document.getElementById('quote-amount').value = '';
@@ -159,12 +171,28 @@
             }
         }
 
-        // CARREGAR DADOS E ATUALIZAR LISTAS
+        // CARREGAR TUDO DO SUPABASE
         async function loadData() {
+            // Relatórios
+            const { data: reports } = await _supabase.from('reports').select('*');
+            if (reports) {
+                document.getElementById('metric-reports').innerText = reports.length;
+                let totalRev = reports.reduce((acc, r) => acc + Number(r.revenue || 0), 0);
+                document.getElementById('metric-revenue').innerText = "Kz " + totalRev.toLocaleString();
+
+                let rHtml = '';
+                reports.forEach(r => {
+                    rHtml += `<div class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center text-xs">
+                        <div><p class="font-bold text-slate-800">${r.name}</p><p class="text-slate-400">Registo financeiro</p></div>
+                        <span class="font-black text-indigo-600">Kz ${Number(r.revenue).toLocaleString()}</span>
+                    </div>`;
+                });
+                document.getElementById('list-reports').innerHTML = rHtml || '<p class="text-xs text-slate-400 text-center py-2">Sem relatórios registados.</p>';
+            }
+
             // Clientes
             const { data: clients } = await _supabase.from('clients').select('*');
             if (clients) {
-                document.getElementById('metric-clients').innerText = clients.length;
                 let cHtml = '';
                 clients.forEach(c => {
                     cHtml += `<div class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center text-xs">
@@ -177,10 +205,6 @@
             // Orçamentos
             const { data: quotes } = await _supabase.from('quotes').select('*');
             if (quotes) {
-                document.getElementById('metric-quotes').innerText = quotes.length;
-                let total = quotes.reduce((acc, q) => acc + Number(q.amount || 0), 0);
-                document.getElementById('metric-revenue').innerText = "Kz " + total.toLocaleString();
-                
                 let qHtml = '';
                 quotes.forEach(q => {
                     qHtml += `<div class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center text-xs">
