@@ -1,89 +1,232 @@
-<!doctype html>
-<html lang="pt-AO">
+<!DOCTYPE html>
+<html lang="pt-pt">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="GAG Visual — tecnologia, organização, branding, marketing digital e inteligência artificial.">
-<title>GAG Visual HQ</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest"></script>
-<style>
-:root{--blue:#003FD3;--gold:#DAA520;--bg:#0A0A0F;--lime:#B6FF3C}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Inter,sans-serif;background:var(--bg);color:#f5f5f7;overflow-x:hidden}h1,h2,h3{font-family:"Space Grotesk",sans-serif}
-.glass{background:rgba(20,20,28,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.09)}
-.gradient{background:linear-gradient(90deg,#7C5CFC,#EC4899);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.btn{background:var(--lime);color:#000;font-weight:700;transition:.25s;border:0;cursor:pointer}.btn:hover{box-shadow:0 0 22px rgba(182,255,60,.45);transform:translateY(-2px)}
-.card{transition:.25s}.card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.2);box-shadow:0 15px 50px rgba(0,0,0,.2)}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px rgba(182,255,60,.7)}
-@media print{nav,.no-print,footer{display:none!important}body{background:#fff;color:#000}}
-</style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="GAG Visual — tecnologia, organização, branding, marketing digital e inteligência artificial.">
+    <title>GAG Visual HQ & Sistema Integrado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root{--blue:#003FD3;--gold:#DAA520;--bg:#0A0A0F;--lime:#B6FF3C}
+        *{box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{margin:0;font-family:Inter,sans-serif;background:var(--bg);color:#f5f5f7;overflow-x:hidden}
+        h1,h2,h3{font-family:"Space Grotesk",sans-serif}
+        .glass{background:rgba(20,20,28,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.09)}
+        .gradient{background:linear-gradient(90deg,#7C5CFC,#EC4899);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+        .btn{background:var(--lime);color:#000;font-weight:700;transition:.25s;border:0;cursor:pointer}
+        .btn:hover{box-shadow:0 0 22px rgba(182,255,60,.45);transform:translateY(-2px)}
+        .card{transition:.25s}
+        .card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.2);box-shadow:0 15px 50px rgba(0,0,0,.2)}
+        .dot{width:7px;height:7px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px rgba(182,255,60,.7)}
+    </style>
 </head>
-<body>
-<nav class="fixed top-0 left-0 right-0 z-50 glass">
-<div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-<a href="#inicio" class="flex items-center gap-2"><div class="w-10 h-10 bg-[#003FD3] rounded-lg flex items-center justify-center font-bold">G</div><span class="text-xl font-bold">GAG VISUAL</span></a>
-<div class="hidden md:flex gap-8 text-sm text-gray-400">
-<a href="#tecnologia">Tecnologia</a><a href="#organizacao">Organização</a><a href="#branding">Branding</a><a href="#portfolio">Portfólio</a>
-</div>
-<button id="portal" class="btn px-5 py-2 rounded-full text-xs">PORTAL HQ</button>
-</div></nav>
+<body class="pb-24">
 
-<main id="inicio">
-<section class="pt-32 pb-20 px-6 max-w-6xl mx-auto text-center">
-<div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-[var(--gold)] text-xs font-bold mb-6 tracking-widest uppercase"><span class="dot"></span>GAG Visual · HQ</div>
-<h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tighter">Soluções com <span class="gradient">Propósito</span>,<br>Inovação com Raízes.</h1>
-<p class="text-gray-400 max-w-2xl mx-auto mb-10 text-lg">Tecnologia, organização, branding, marketing digital, automação e inteligência artificial aplicados a necessidades reais.</p>
-<div class="flex flex-col md:flex-row gap-4 justify-center"><button id="scannerGo" class="btn px-8 py-4 rounded-xl text-lg">Abrir Scanner</button><button id="portfolioGo" class="glass px-8 py-4 rounded-xl text-lg">Ver Portfólio</button></div>
-</section>
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#inicio" class="flex items-center gap-2">
+                <div class="w-10 h-10 bg-[#003FD3] rounded-lg flex items-center justify-center font-bold">G</div>
+                <span class="text-xl font-bold">GAG VISUAL</span>
+            </a>
+            <div class="hidden md:flex gap-8 text-sm text-gray-400">
+                <a href="#tecnologia" class="hover:text-white">Tecnologia</a>
+                <a href="#organizacao" class="hover:text-white">Organização</a>
+                <a href="#branding" class="hover:text-white">Branding</a>
+                <a href="#sistema" class="hover:text-white text-[var(--lime)] font-semibold">Sistema / Relatórios</a>
+            </div>
+            <button id="portal" class="btn px-5 py-2 rounded-full text-xs">PORTAL HQ</button>
+        </div>
+    </nav>
 
-<section class="py-20 px-6 max-w-6xl mx-auto">
-<div class="mb-12"><span class="text-xs uppercase tracking-[.25em] text-[var(--gold)] font-bold">Método TOB</span><h2 class="text-4xl font-bold mt-3">Tecnologia. Organização. Branding.</h2><p class="text-gray-400 max-w-2xl mt-4">Estrutura operacional da GAG Visual para transformar necessidades reais em soluções organizadas.</p></div>
-<div class="grid md:grid-cols-3 gap-6">
-<article id="tecnologia" class="card glass p-8 rounded-3xl"><i data-lucide="cpu" class="text-[var(--blue)] mb-5"></i><h3 class="text-2xl font-bold mb-3">Tecnologia</h3><p class="text-gray-400">Ferramentas digitais, inteligência artificial, automação, websites, aplicações e soluções tecnológicas.</p></article>
-<article id="organizacao" class="card glass p-8 rounded-3xl"><i data-lucide="workflow" class="text-[var(--gold)] mb-5"></i><h3 class="text-2xl font-bold mb-3">Organização</h3><p class="text-gray-400">Processos, gestão de clientes, projetos, documentos, orçamentos e operações.</p></article>
-<article id="branding" class="card glass p-8 rounded-3xl"><i data-lucide="palette" class="text-pink-400 mb-5"></i><h3 class="text-2xl font-bold mb-3">Branding</h3><p class="text-gray-400">Identidade visual, design gráfico, conteúdo, posicionamento e comunicação de marcas.</p></article>
-</div></section>
+    <main id="inicio">
+        <!-- HERO SECTION -->
+        <section class="pt-32 pb-20 px-6 max-w-6xl mx-auto text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-[var(--gold)] text-xs font-bold mb-6 tracking-widest uppercase">
+                <span class="dot"></span>GAG Visual · HQ & Operações
+            </div>
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tighter">Soluções com <span class="gradient">Propósito</span>,<br>Inovação com Raízes.</h1>
+            <p class="text-gray-400 max-w-2xl mx-auto mb-10 text-lg">Tecnologia, organização, branding, marketing digital, automação e inteligência artificial aplicados a necessidades reais.</p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <button id="sistemaGo" class="btn px-8 py-4 rounded-xl text-lg">Aceder ao Sistema</button>
+                <button id="scannerGo" class="glass px-8 py-4 rounded-xl text-lg hover:bg-white/5">Scanner de Documentos</button>
+            </div>
+        </section>
 
-<section id="scanner" class="py-20 px-6">
-<div class="max-w-6xl mx-auto glass rounded-3xl p-8 md:p-12">
-<span class="text-xs uppercase tracking-widest text-[var(--gold)] font-bold">Ferramenta</span>
-<h2 class="text-3xl font-bold mt-3">Scanner de Documentos</h2>
-<p class="text-gray-400 mt-3 max-w-2xl">Área de preparação para análise documental. Não apresenta resultados financeiros fictícios nem inventa conclusões.</p>
-<div class="mt-8">
-<label for="file" class="block text-xs text-gray-400 mb-2">Selecionar documento</label>
-<input id="file" type="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#B6FF3C] file:text-black file:font-semibold">
-<button id="analyze" class="btn px-6 py-3 rounded-xl mt-4">Preparar análise</button>
-<div id="status" class="glass rounded-xl px-5 py-4 text-sm text-gray-400 mt-4">Nenhum documento selecionado.</div>
-</div></div></section>
+        <!-- MÉTODO TOB -->
+        <section class="py-20 px-6 max-w-6xl mx-auto">
+            <div class="mb-12">
+                <span class="text-xs uppercase tracking-[.25em] text-[var(--gold)] font-bold">Método TOB</span>
+                <h2 class="text-4xl font-bold mt-3">Tecnologia. Organização. Branding.</h2>
+                <p class="text-gray-400 max-w-2xl mt-4">Estrutura operacional da GAG Visual para transformar necessidades reais em soluções organizadas.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-6">
+                <article id="tecnologia" class="card glass p-8 rounded-3xl">
+                    <i data-lucide="cpu" class="text-[var(--blue)] mb-5"></i>
+                    <h3 class="text-2xl font-bold mb-3">Tecnologia</h3>
+                    <p class="text-gray-400">Ferramentas digitais, inteligência artificial, automação, websites, aplicações e soluções tecnológicas.</p>
+                </article>
+                <article id="organizacao" class="card glass p-8 rounded-3xl">
+                    <i data-lucide="workflow" class="text-[var(--gold)] mb-5"></i>
+                    <h3 class="text-2xl font-bold mb-3">Organização</h3>
+                    <p class="text-gray-400">Processos, gestão de clientes, projetos, documentos, orçamentos e operações.</p>
+                </article>
+                <article id="branding" class="card glass p-8 rounded-3xl">
+                    <i data-lucide="palette" class="text-pink-400 mb-5"></i>
+                    <h3 class="text-2xl font-bold mb-3">Branding</h3>
+                    <p class="text-gray-400">Identidade visual, design gráfico, conteúdo, posicionamento e comunicação de marcas.</p>
+                </article>
+            </div>
+        </section>
 
-<section id="portfolio" class="py-20 px-6 max-w-6xl mx-auto">
-<div class="glass rounded-3xl p-10 text-center"><i data-lucide="folder-open" class="w-10 h-10 mx-auto mb-5 text-[var(--blue)]"></i><h2 class="text-3xl font-bold">Portfólio</h2><p class="text-gray-400 max-w-xl mx-auto mt-3">Área destinada aos trabalhos reais da GAG Visual.</p><div class="mt-6 text-sm text-gray-500">Ainda não existem projetos registados nesta interface.</div></div>
-</section>
-</main>
+        <!-- SECÇÃO DO SISTEMA DE GESTÃO / RELATÓRIOS -->
+        <section id="sistema" class="py-20 px-6 max-w-4xl mx-auto">
+            <div class="glass rounded-3xl p-8 md:p-12 space-y-6">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <span class="text-xs uppercase tracking-widest text-[var(--lime)] font-bold">Painel Operacional</span>
+                        <h2 class="text-3xl font-bold mt-2">Relatórios e Análises</h2>
+                    </div>
+                    <button onclick="toggleAdmin()" class="text-xs bg-slate-800 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700">
+                        <i class="fa-solid fa-lock text-[var(--lime)] mr-1"></i> ADM
+                    </button>
+                </div>
 
-<footer class="py-16 px-6 border-t border-white/10"><div class="max-w-6xl mx-auto flex justify-between gap-8"><div><strong>GAG VISUAL</strong><p class="text-sm text-gray-500 mt-3">Soluções com propósito, inovação com raízes.</p></div><p class="text-xs text-gray-600">© 2026 GAG Visual. Todos os direitos reservados.</p></div></footer>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="glass p-5 rounded-2xl">
+                        <p class="text-xs font-semibold text-gray-400 uppercase">Receita Registada</p>
+                        <p id="metric-revenue" class="text-xl font-black text-white mt-1">Kz 0</p>
+                    </div>
+                    <div class="glass p-5 rounded-2xl">
+                        <p class="text-xs font-semibold text-gray-400 uppercase">Total Relatórios</p>
+                        <p id="metric-reports" class="text-xl font-black text-white mt-1">0</p>
+                    </div>
+                </div>
 
-<div id="modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center p-6 z-[100]"><div class="glass rounded-3xl max-w-md w-full p-8"><div class="flex justify-between"><h3 class="text-2xl font-bold">Portal HQ</h3><button id="close">✕</button></div><p class="text-gray-400 text-sm mt-4">Ponto de entrada preparado. A autenticação e o backend ainda precisam ser ligados.</p><button id="continue" class="btn w-full py-3 rounded-xl mt-6">Continuar</button></div></div>
-<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white text-black px-5 py-3 rounded-xl hidden z-[200] text-sm font-semibold"></div>
+                <!-- FORMULÁRIO DE REGISTO -->
+                <form onsubmit="addReport(event)" class="glass p-6 rounded-2xl space-y-4">
+                    <p class="text-xs font-bold text-[var(--gold)] uppercase tracking-wider">Novo Registo Financeiro</p>
+                    <input type="text" id="report-name" placeholder="Descrição do Relatório ou Projeto" required class="w-full text-sm p-3 rounded-xl bg-black/40 border border-white/10 text-white focus:outline-none focus:border-[var(--lime)]">
+                    <input type="number" id="report-revenue" placeholder="Valor (Kz)" required class="w-full text-sm p-3 rounded-xl bg-black/40 border border-white/10 text-white focus:outline-none focus:border-[var(--lime)]">
+                    <button type="submit" class="btn w-full py-3 rounded-xl text-sm">Guardar no Supabase</button>
+                </form>
 
-<script>
-document.addEventListener("DOMContentLoaded",()=>{
-lucide.createIcons();
-const $=id=>document.getElementById(id);
-const msg=t=>{const x=$("toast");x.textContent=t;x.classList.remove("hidden");clearTimeout(window.tt);window.tt=setTimeout(()=>x.classList.add("hidden"),3000)};
-const go=id=>$(id).scrollIntoView({behavior:"smooth"});
-$("scannerGo").onclick=()=>go("scanner");$("portfolioGo").onclick=()=>go("portfolio");
-$("portal").onclick=()=>{$("modal").classList.remove("hidden");$("modal").classList.add("flex")};
-$("close").onclick=()=>{$("modal").classList.add("hidden");$("modal").classList.remove("flex")};
-$("continue").onclick=()=>msg("Portal preparado. Ligue a autenticação ao backend na próxima camada.");
-$("analyze").onclick=()=>{
-const f=$("file").files[0];
-if(!f)return msg("Selecione primeiro um documento.");
-$("status").innerHTML='<span class="dot inline-block mr-2"></span>Documento preparado para análise.<p class="text-xs text-gray-500 mt-2">Ficheiro: '+safe(f.name)+' · '+(f.size/1048576).toFixed(2)+' MB</p><p class="text-xs text-gray-500 mt-1">O motor de IA/backend ainda precisa ser ligado para produzir uma análise real.</p>';
-};
-function safe(v){return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
-});
-</script>
+                <div id="list-reports" class="space-y-3 pt-2">
+                    <p class="text-xs text-gray-500 text-center">A carregar dados do Supabase...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCANNER DE DOCUMENTOS -->
+        <section id="scanner" class="py-20 px-6 max-w-6xl mx-auto">
+            <div class="glass rounded-3xl p-8 md:p-12">
+                <span class="text-xs uppercase tracking-widest text-[var(--gold)] font-bold">Ferramenta</span>
+                <h2 class="text-3xl font-bold mt-3">Scanner de Documentos</h2>
+                <p class="text-gray-400 mt-3 max-w-2xl">Área de preparação para análise documental.</p>
+                <div class="mt-8">
+                    <label for="file" class="block text-xs text-gray-400 mb-2">Selecionar documento</label>
+                    <input id="file" type="file" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-[#B6FF3C] file:text-black file:font-semibold">
+                    <button id="analyze" class="btn px-6 py-3 rounded-xl mt-4 text-sm">Preparar análise</button>
+                    <div id="status" class="glass rounded-xl px-5 py-4 text-sm text-gray-400 mt-4">Nenhum documento selecionado.</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="py-16 px-6 border-t border-white/10">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between gap-8">
+            <div>
+                <strong>GAG VISUAL (SU), Lda</strong>
+                <p class="text-sm text-gray-500 mt-3">NIF: 5001654063 | Kilamba, Edifício D26, Luanda</p>
+            </div>
+            <p class="text-xs text-gray-600">© 2026 GAG Visual. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- MODAL PORTAL -->
+    <div id="modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center p-6 z-[100]">
+        <div class="glass rounded-3xl max-w-md w-full p-8 relative">
+            <div class="flex justify-between items-center"><h3 class="text-2xl font-bold">Portal HQ</h3><button id="close" class="text-xl">✕</button></div>
+            <p class="text-gray-400 text-sm mt-4">Ponto de entrada integrado com Supabase e ferramentas de gestão GAG Visual.</p>
+            <button id="continue" class="btn w-full py-3 rounded-xl mt-6 text-sm">Entrar no Sistema</button>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE INTEGRAÇÃO (SUPABASE + UI) -->
+    <script>
+        const SUPABASE_URL = "https://kjemvkaxnxeaxdhbjzip.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqZW12a2F4bnhlYXhkaGJqemlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MzY3NjcsImV4cCI6MjEwMjAxMjc2N30.nU-qBcuvpFGcur9pkNWq2mLnIhuVrH3nIfi42f4R3J4";
+        const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+            loadData();
+
+            const go = id => document.getElementById(id).scrollIntoView({behavior:"smooth"});
+            document.getElementById("sistemaGo").onclick = () => go("sistema");
+            document.getElementById("scannerGo").onclick = () => go("scanner");
+
+            document.getElementById("portal").onclick = () => { document.getElementById("modal").classList.remove("hidden"); document.getElementById("modal").classList.add("flex"); };
+            document.getElementById("close").onclick = () => { document.getElementById("modal").classList.add("hidden"); document.getElementById("modal").classList.remove("flex"); };
+            document.getElementById("continue").onclick = () => { 
+                document.getElementById("modal").classList.add("hidden"); 
+                document.getElementById("modal").classList.remove("flex");
+                go("sistema");
+            };
+
+            document.getElementById("analyze").onclick = () => {
+                const f = document.getElementById("file").files[0];
+                if(!f) return alert("Selecione primeiro um documento.");
+                document.getElementById("status").innerHTML = `<span class="dot inline-block mr-2"></span>Documento preparado.<p class="text-xs text-gray-500 mt-2">Ficheiro: ${f.name} · ${(f.size/1048576).toFixed(2)} MB</p>`;
+            };
+        });
+
+        function toggleAdmin() {
+            const pass = prompt("Digite a Senha de Administrador:");
+            if (pass === "1234" || pass === "gagvisual") {
+                alert("Modo Administrador Ativado com Sucesso!");
+            } else if(pass !== null) {
+                alert("Senha Incorreta!");
+            }
+        }
+
+        async function addReport(e) {
+            e.preventDefault();
+            const name = document.getElementById('report-name').value;
+            const revenue = parseFloat(document.getElementById('report-revenue').value);
+
+            const { error } = await _supabase.from('reports').insert([{ name, revenue }]);
+            if (error) {
+                alert("Erro ao gravar: " + error.message);
+            } else {
+                document.getElementById('report-name').value = '';
+                document.getElementById('report-revenue').value = '';
+                loadData();
+            }
+        }
+
+        async function loadData() {
+            const { data: reports } = await _supabase.from('reports').select('*');
+            if (reports) {
+                document.getElementById('metric-reports').innerText = reports.length;
+                let totalRev = reports.reduce((acc, r) => acc + Number(r.revenue || 0), 0);
+                document.getElementById('metric-revenue').innerText = "Kz " + totalRev.toLocaleString();
+
+                let rHtml = '';
+                reports.forEach(r => {
+                    rHtml += `<div class="glass p-4 rounded-xl flex justify-between items-center text-xs">
+                        <div><p class="font-bold text-white">${r.name}</p><p class="text-gray-400 mt-0.5">Registo Financeiro</p></div>
+                        <span class="font-black text-[var(--lime)] text-sm">Kz ${Number(r.revenue).toLocaleString()}</span>
+                    </div>`;
+                });
+                document.getElementById('list-reports').innerHTML = rHtml || '<p class="text-xs text-gray-500 text-center py-2">Sem relatórios registados.</p>';
+            }
+        }
+    </script>
 </body>
 </html>
