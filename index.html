@@ -1,212 +1,1295 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-AO">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GAG Visual System - Dashboard</title>
-  <!-- Tailwind CSS CDN -->
+
+  <title>GAG Visual System — Relatórios</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
   <style>
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }
+
     .no-scrollbar {
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+
+    @media print {
+      body {
+        background: white !important;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      .print-area {
+        max-width: 100% !important;
+        box-shadow: none !important;
+      }
+    }
   </style>
 </head>
-<body class="bg-slate-100 font-sans text-slate-800">
 
-  <!-- Main Container Mobile -->
-  <div class="max-w-md mx-auto bg-white min-h-screen shadow-xl relative pb-24">
-    
-    <!-- Header Superior -->
-    <header class="p-4 border-b flex justify-between items-center bg-white sticky top-0 z-10">
+<body class="bg-slate-100 text-slate-800">
+
+<div class="max-w-md mx-auto bg-white min-h-screen shadow-xl relative pb-24 print-area">
+
+  <!-- HEADER -->
+  <header class="p-4 border-b bg-white sticky top-0 z-20">
+    <div class="flex justify-between items-center">
+
       <div>
-        <h1 class="text-xl font-bold text-slate-900">GAG Visual System</h1>
-        <div class="flex items-center gap-2 mt-0.5">
-          <span class="text-xs text-slate-500">Marketing Automation - Mobile</span>
-          <span class="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            Online
+        <h1 class="text-xl font-bold text-slate-900">
+          GAG Visual System
+        </h1>
+
+        <div class="flex items-center gap-2 mt-1">
+          <span class="text-xs text-slate-500">
+            Marketing Automation — Mobile
+          </span>
+
+          <span id="connectionStatus"
+            class="inline-flex items-center gap-1 text-[11px] font-medium
+            text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
+
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+            Local
           </span>
         </div>
       </div>
-      <div class="flex items-center gap-1 text-slate-500">
-        <button type="button" class="p-2 hover:bg-slate-100 rounded-lg transition-colors" aria-label="Notificações">
+
+      <div class="flex items-center gap-1 text-slate-500 no-print">
+
+        <button
+          type="button"
+          onclick="showToast('Nenhuma notificação disponível.')"
+          class="p-2 hover:bg-slate-100 rounded-lg"
+          aria-label="Notificações">
+
           <i data-lucide="bell" class="w-5 h-5"></i>
         </button>
-        <button type="button" class="p-2 hover:bg-slate-100 rounded-lg transition-colors" aria-label="Configurações">
+
+        <button
+          type="button"
+          onclick="showToast('Configurações disponíveis na versão administrativa.')"
+          class="p-2 hover:bg-slate-100 rounded-lg"
+          aria-label="Configurações">
+
           <i data-lucide="settings" class="w-5 h-5"></i>
         </button>
+
       </div>
-    </header>
 
-    <!-- Content Area -->
-    <main class="p-4 space-y-6">
+    </div>
+  </header>
 
-      <!-- Title & Action -->
+
+  <!-- CONTEÚDO -->
+  <main class="p-4 space-y-6">
+
+    <!-- TÍTULO -->
+    <section>
+
       <div class="flex justify-between items-start gap-2">
+
         <div>
-          <h2 class="text-lg font-bold text-slate-900">Relatórios e Análises</h2>
-          <p class="text-xs text-slate-500">Acompanhe o desempenho do seu negócio</p>
+          <h2 class="text-lg font-bold text-slate-900">
+            Relatórios e Análises
+          </h2>
+
+          <p class="text-xs text-slate-500 mt-1">
+            Acompanhe o desempenho real do negócio.
+          </p>
         </div>
-        <button type="button" class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white text-xs font-semibold px-3 py-2 rounded-xl flex items-center gap-1.5 shadow-sm shadow-blue-200 transition-all shrink-0">
-          <i data-lucide="file-text" class="w-4 h-4"></i>
-          Gerar Relatório
+
+        <button
+          onclick="openCreateReport()"
+          class="bg-blue-600 hover:bg-blue-700 active:scale-95
+          text-white text-xs font-semibold px-3 py-2 rounded-xl
+          flex items-center gap-1.5 shadow-sm">
+
+          <i data-lucide="file-plus" class="w-4 h-4"></i>
+          Novo relatório
+
         </button>
+
       </div>
 
-      <!-- Resumo KPI Cards -->
-      <div class="grid grid-cols-2 gap-3">
-        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 flex justify-between items-center">
-          <div>
-            <p class="text-[11px] font-medium text-slate-500">Receita Total</p>
-            <p class="text-lg font-bold text-slate-900 mt-0.5">Kz 330 000</p>
-          </div>
-          <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-            <i data-lucide="dollar-sign" class="w-5 h-5"></i>
-          </div>
-        </div>
+    </section>
 
-        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100 flex justify-between items-center">
-          <div>
-            <p class="text-[11px] font-medium text-slate-500">Relatórios Prontos</p>
-            <p class="text-lg font-bold text-slate-900 mt-0.5">3</p>
-          </div>
-          <div class="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
-            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-          </div>
-        </div>
+
+    <!-- KPIs -->
+    <section class="grid grid-cols-2 gap-3">
+
+      <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
+
+        <p class="text-[11px] font-medium text-slate-500">
+          Receita registada
+        </p>
+
+        <p id="totalRevenue"
+           class="text-lg font-bold text-slate-900 mt-1">
+          Kz 0
+        </p>
+
       </div>
 
-      <!-- Filter Buttons -->
+
+      <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
+
+        <p class="text-[11px] font-medium text-slate-500">
+          Relatórios
+        </p>
+
+        <p id="totalReports"
+           class="text-lg font-bold text-slate-900 mt-1">
+          0
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- FILTROS -->
+    <section>
+
+      <h3 class="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
+        Filtrar por tipo
+      </h3>
+
+      <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+
+        <button
+          data-filter="todos"
+          onclick="setFilter('todos')"
+          class="filter-btn bg-blue-600 text-white font-medium px-3.5 py-1.5
+          rounded-full whitespace-nowrap text-xs">
+
+          Todos
+
+        </button>
+
+        <button
+          data-filter="financeiro"
+          onclick="setFilter('financeiro')"
+          class="filter-btn bg-slate-100 text-slate-600 font-medium px-3.5 py-1.5
+          rounded-full whitespace-nowrap text-xs">
+
+          Financeiro
+
+        </button>
+
+        <button
+          data-filter="performance"
+          onclick="setFilter('performance')"
+          class="filter-btn bg-slate-100 text-slate-600 font-medium px-3.5 py-1.5
+          rounded-full whitespace-nowrap text-xs">
+
+          Performance
+
+        </button>
+
+        <button
+          data-filter="clientes"
+          onclick="setFilter('clientes')"
+          class="filter-btn bg-slate-100 text-slate-600 font-medium px-3.5 py-1.5
+          rounded-full whitespace-nowrap text-xs">
+
+          Clientes
+
+        </button>
+
+        <button
+          data-filter="projetos"
+          onclick="setFilter('projetos')"
+          class="filter-btn bg-slate-100 text-slate-600 font-medium px-3.5 py-1.5
+          rounded-full whitespace-nowrap text-xs">
+
+          Projetos
+
+        </button>
+
+      </div>
+
+    </section>
+
+
+    <!-- LISTA -->
+    <section>
+
+      <div id="reportsList"></div>
+
+    </section>
+
+  </main>
+
+
+  <!-- NAVEGAÇÃO -->
+  <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto
+  bg-white border-t border-slate-100 py-2 px-2 z-30 no-print">
+
+    <div class="flex items-center overflow-x-auto no-scrollbar space-x-1">
+
+      <button onclick="navigate('dashboard')"
+        class="nav-btn flex flex-col items-center min-w-[60px] py-1 text-slate-400">
+        <i data-lucide="layout-grid" class="w-5 h-5"></i>
+        <span class="text-[10px] mt-1">Dashboard</span>
+      </button>
+
+      <button onclick="navigate('crm')"
+        class="nav-btn flex flex-col items-center min-w-[60px] py-1 text-slate-400">
+        <i data-lucide="users" class="w-5 h-5"></i>
+        <span class="text-[10px] mt-1">CRM</span>
+      </button>
+
+      <button onclick="navigate('orcamento')"
+        class="nav-btn flex flex-col items-center min-w-[60px] py-1 text-slate-400">
+        <i data-lucide="calculator" class="w-5 h-5"></i>
+        <span class="text-[10px] mt-1">Orçamento</span>
+      </button>
+
+      <button onclick="navigate('portfolio')"
+        class="nav-btn flex flex-col items-center min-w-[60px] py-1 text-slate-400">
+        <i data-lucide="folder-kanban" class="w-5 h-5"></i>
+        <span class="text-[10px] mt-1">Portfólio</span>
+      </button>
+
+      <button onclick="navigate('relatorios')"
+        class="nav-btn flex flex-col items-center min-w-[60px] py-1 text-blue-600">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+        <span class="text-[10px] mt-1">Relatórios</span>
+      </button>
+
+    </div>
+
+  </nav>
+
+</div>
+
+
+<!-- MODAL NOVO RELATÓRIO -->
+<div id="createModal"
+  class="fixed inset-0 bg-black/50 hidden items-center justify-center
+  p-4 z-50 no-print">
+
+  <div class="bg-white rounded-2xl w-full max-w-md p-5">
+
+    <div class="flex justify-between items-center mb-5">
+
+      <h3 class="font-bold text-lg">
+        Criar relatório
+      </h3>
+
+      <button onclick="closeCreateReport()">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+    </div>
+
+
+    <form id="reportForm" class="space-y-4">
+
       <div>
-        <h3 class="text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Filtrar por Tipo</h3>
-        <div class="flex gap-2 overflow-x-auto pb-1 no-scrollbar text-xs">
-          <button type="button" class="bg-blue-600 text-white font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap shadow-sm">
-            Todos os Relatórios
-          </button>
-          <button type="button" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap transition-colors">
-            Financeiro
-          </button>
-          <button type="button" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap transition-colors">
-            Performance
-          </button>
-          <button type="button" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap transition-colors">
-            Clientes
-          </button>
-          <button type="button" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium px-3.5 py-1.5 rounded-full whitespace-nowrap transition-colors">
-            Projetos
-          </button>
-        </div>
+
+        <label class="text-xs font-semibold text-slate-600">
+          Nome do relatório
+        </label>
+
+        <input
+          id="reportName"
+          required
+          placeholder="Ex.: Relatório mensal de vendas"
+          class="w-full mt-1 border border-slate-200 rounded-xl
+          px-3 py-2.5 text-sm outline-none focus:ring-2
+          focus:ring-blue-500">
+
       </div>
 
-      <!-- Card de Relatório 1 -->
-      <div class="p-4 bg-white rounded-2xl border border-slate-100 shadow-sm space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-          <div class="flex items-center gap-3">
-            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-              <i data-lucide="dollar-sign" class="w-4 h-4"></i>
-            </div>
-            <div>
-              <h4 class="text-sm font-bold text-slate-900">Relatório Financeiro</h4>
-              <p class="text-xs text-slate-400">Dezembro 2024</p>
-            </div>
-          </div>
-          <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Pronto</span>
-        </div>
 
-        <div class="grid grid-cols-4 gap-2 text-center py-1">
-          <div>
-            <p class="text-xs font-bold text-emerald-600">Kz 185k</p>
-            <p class="text-[10px] text-slate-400 mt-0.5">Receita</p>
-          </div>
-          <div>
-            <p class="text-xs font-bold text-blue-600">12</p>
-            <p class="text-[10px] text-slate-400 mt-0.5">Projetos</p>
-          </div>
-          <div>
-            <p class="text-xs font-bold text-purple-600">8</p>
-            <p class="text-[10px] text-slate-400 mt-0.5">Clientes</p>
-          </div>
-          <div>
-            <p class="text-xs font-bold text-orange-500">+23.5%</p>
-            <p class="text-[10px] text-slate-400 mt-0.5">Crescimento</p>
-          </div>
-        </div>
+      <div>
 
-        <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-50">
-          <div class="flex items-center gap-1">
-            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
-            <span>Gerado em 15/12/2024</span>
-          </div>
-        </div>
+        <label class="text-xs font-semibold text-slate-600">
+          Tipo
+        </label>
 
-        <div class="grid grid-cols-3 gap-2 pt-1">
-          <button type="button" class="flex items-center justify-center gap-1 py-1.5 bg-blue-50 hover:bg-blue-100 active:bg-blue-200 text-blue-600 font-medium text-xs rounded-xl transition-colors">
-            <i data-lucide="eye" class="w-3.5 h-3.5"></i> Visualizar
-          </button>
-          <button type="button" class="flex items-center justify-center gap-1 py-1.5 bg-emerald-50 hover:bg-emerald-100 active:bg-emerald-200 text-emerald-600 font-medium text-xs rounded-xl transition-colors">
-            <i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar PDF
-          </button>
-          <button type="button" class="flex items-center justify-center gap-1 py-1.5 bg-purple-50 hover:bg-purple-100 active:bg-purple-200 text-purple-600 font-medium text-xs rounded-xl transition-colors">
-            <i data-lucide="share-2" class="w-3.5 h-3.5"></i> Compartilhar
-          </button>
-        </div>
+        <select
+          id="reportType"
+          class="w-full mt-1 border border-slate-200 rounded-xl
+          px-3 py-2.5 text-sm">
+
+          <option value="financeiro">Financeiro</option>
+          <option value="performance">Performance</option>
+          <option value="clientes">Clientes</option>
+          <option value="projetos">Projetos</option>
+
+        </select>
+
       </div>
 
-    </main>
 
-    <!-- Navegação Inferior -->
-    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-100 py-2 px-2 z-20">
-      <div class="flex items-center overflow-x-auto no-scrollbar space-x-1 px-1">
-        <a href="#" class="flex flex-col items-center min-w-[60px] py-1 text-slate-400 hover:text-blue-600">
-          <i data-lucide="layout-grid" class="w-5 h-5"></i>
-          <span class="text-[10px] mt-1">Dashboard</span>
-        </a>
-        <a href="#" class="flex flex-col items-center min-w-[60px] py-1 text-slate-400 hover:text-blue-600">
-          <i data-lucide="user" class="w-5 h-5"></i>
-          <span class="text-[10px] mt-1">CRM</span>
-        </a>
-        <a href="#" class="flex flex-col items-center min-w-[60px] py-1 text-slate-400 hover:text-blue-600">
-          <i data-lucide="calculator" class="w-5 h-5"></i>
-          <span class="text-[10px] mt-1">Orçamento</span>
-        </a>
-        <a href="#" class="flex flex-col items-center min-w-[60px] py-1 text-slate-400 hover:text-blue-600">
-          <i data-lucide="folder-kanban" class="w-5 h-5"></i>
-          <span class="text-[10px] mt-1">Portfólio</span>
-        </a>
-        <a href="#" class="flex flex-col items-center min-w-[60px] py-1 text-slate-400 hover:text-blue-600">
-          <i data-lucide="share-2" class="w-5 h-5"></i>
-          <span class="text-[10px] mt-1">Social</span>
-        </a>
-        <a href="#" class="flex flex-col items-center min-w-[60px] py-1 text-slate-400 hover:text-blue-600">
-          <i data-lucide="message-square" class="w-5 h-5"></i>
-          <span class="text-[10px] mt-1">WhatsApp</span>
-        </a>
-        <a href="#" class="flex flex-col items-center min-w-[60px] py-1 text-slate-400 hover:text-blue-600">
-          <i data-lucide="layout-template" class="w-5 h-5"></i>
-          <span class="text-[10px] mt-1">Templates</span>
-        </a>
-        <a href="#" class="flex flex-col items-center min-w-[60px] py-1 text-blue-600 font-semibold bg-blue-50 rounded-xl">
-          <i data-lucide="bar-chart-2" class="w-5 h-5"></i>
-          <span class="text-[10px] mt-1">Relatórios</span>
-        </a>
-        <a href="#" class="flex flex-col items-center min-w-[60px] py-1 text-slate-400 hover:text-blue-600">
-          <i data-lucide="zap" class="w-5 h-5"></i>
-          <span class="text-[10px] mt-1">Ações</span>
-        </a>
+      <div>
+
+        <label class="text-xs font-semibold text-slate-600">
+          Receita registada (Kz)
+        </label>
+
+        <input
+          id="reportRevenue"
+          type="number"
+          min="0"
+          value="0"
+          class="w-full mt-1 border border-slate-200 rounded-xl
+          px-3 py-2.5 text-sm">
+
+        <p class="text-[11px] text-slate-400 mt-1">
+          Introduza apenas valor real. Pode deixar 0 se não houver receita registada.
+        </p>
+
       </div>
-    </nav>
+
+
+      <div>
+
+        <label class="text-xs font-semibold text-slate-600">
+          Observação
+        </label>
+
+        <textarea
+          id="reportDescription"
+          rows="4"
+          placeholder="Notas reais sobre este relatório..."
+          class="w-full mt-1 border border-slate-200 rounded-xl
+          px-3 py-2.5 text-sm resize-none"></textarea>
+
+      </div>
+
+
+      <div class="flex gap-2 pt-2">
+
+        <button
+          type="button"
+          onclick="closeCreateReport()"
+          class="flex-1 bg-slate-100 text-slate-700
+          py-2.5 rounded-xl text-sm font-semibold">
+
+          Cancelar
+
+        </button>
+
+        <button
+          type="submit"
+          class="flex-1 bg-blue-600 text-white
+          py-2.5 rounded-xl text-sm font-semibold">
+
+          Guardar
+
+        </button>
+
+      </div>
+
+    </form>
 
   </div>
 
-  <script>
+</div>
+
+
+<!-- MODAL VISUALIZAÇÃO -->
+<div id="viewModal"
+  class="fixed inset-0 bg-black/50 hidden items-center justify-center
+  p-4 z-50 no-print">
+
+  <div class="bg-white rounded-2xl w-full max-w-md p-5 max-h-[90vh] overflow-y-auto">
+
+    <div class="flex justify-between items-center mb-5">
+
+      <h3 id="viewTitle" class="font-bold text-lg">
+        Relatório
+      </h3>
+
+      <button onclick="closeViewReport()">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+    </div>
+
+    <div id="viewContent"></div>
+
+    <div class="grid grid-cols-2 gap-2 mt-5">
+
+      <button
+        onclick="printCurrentReport()"
+        class="bg-slate-900 text-white py-2.5 rounded-xl
+        text-sm font-semibold flex items-center justify-center gap-2">
+
+        <i data-lucide="printer" class="w-4 h-4"></i>
+        Imprimir / PDF
+
+      </button>
+
+      <button
+        onclick="shareCurrentReport()"
+        class="bg-purple-50 text-purple-600 py-2.5
+        rounded-xl text-sm font-semibold flex items-center
+        justify-center gap-2">
+
+        <i data-lucide="share-2" class="w-4 h-4"></i>
+        Compartilhar
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- TOAST -->
+<div id="toast"
+  class="fixed bottom-24 left-1/2 -translate-x-1/2
+  bg-slate-900 text-white text-xs px-4 py-3 rounded-xl
+  shadow-xl hidden z-[100]">
+
+</div>
+
+
+<script>
+
+  const STORAGE_KEY = "gag_visual_reports";
+
+  let reports = [];
+  let currentFilter = "todos";
+  let currentReportId = null;
+
+
+  /* ============================
+     INICIALIZAÇÃO
+  ============================ */
+
+  document.addEventListener("DOMContentLoaded", () => {
+
+    loadReports();
+
+    renderReports();
+
+    updateKPIs();
+
     lucide.createIcons();
-  </script>
+
+  });
+
+
+  /* ============================
+     STORAGE
+  ============================ */
+
+  function loadReports() {
+
+    try {
+
+      const saved = localStorage.getItem(STORAGE_KEY);
+
+      reports = saved ? JSON.parse(saved) : [];
+
+    } catch (error) {
+
+      console.error(error);
+
+      reports = [];
+
+    }
+
+  }
+
+
+  function saveReports() {
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(reports)
+    );
+
+  }
+
+
+  /* ============================
+     KPIs
+  ============================ */
+
+  function updateKPIs() {
+
+    const totalReports =
+      reports.length;
+
+    const totalRevenue =
+      reports.reduce(
+        (sum, report) =>
+          sum + Number(report.revenue || 0),
+        0
+      );
+
+
+    document.getElementById("totalReports")
+      .textContent = totalReports;
+
+
+    document.getElementById("totalRevenue")
+      .textContent =
+      "Kz " +
+      totalRevenue.toLocaleString("pt-AO");
+
+
+  }
+
+
+  /* ============================
+     FILTROS
+  ============================ */
+
+  function setFilter(filter) {
+
+    currentFilter = filter;
+
+    document
+      .querySelectorAll(".filter-btn")
+      .forEach(button => {
+
+        const active =
+          button.dataset.filter === filter;
+
+        button.classList.toggle(
+          "bg-blue-600",
+          active
+        );
+
+        button.classList.toggle(
+          "text-white",
+          active
+        );
+
+        button.classList.toggle(
+          "bg-slate-100",
+          !active
+        );
+
+        button.classList.toggle(
+          "text-slate-600",
+          !active
+        );
+
+      });
+
+
+    renderReports();
+
+  }
+
+
+  /* ============================
+     RENDER
+  ============================ */
+
+  function renderReports() {
+
+    const container =
+      document.getElementById("reportsList");
+
+
+    let filtered = reports;
+
+
+    if (currentFilter !== "todos") {
+
+      filtered =
+        reports.filter(
+          report =>
+            report.type === currentFilter
+        );
+
+    }
+
+
+    if (!filtered.length) {
+
+      container.innerHTML = `
+
+        <div class="border border-dashed border-slate-200
+        rounded-2xl p-8 text-center">
+
+          <div class="w-12 h-12 bg-slate-100
+          rounded-full mx-auto flex items-center justify-center">
+
+            <i data-lucide="file-bar-chart"
+              class="w-6 h-6 text-slate-400"></i>
+
+          </div>
+
+          <h3 class="font-semibold text-slate-700 mt-4">
+            Nenhum relatório registado
+          </h3>
+
+          <p class="text-xs text-slate-400 mt-2">
+            Ainda não existem dados reais nesta categoria.
+          </p>
+
+          <button
+            onclick="openCreateReport()"
+            class="mt-4 bg-blue-600 text-white
+            px-4 py-2 rounded-xl text-xs font-semibold">
+
+            Criar primeiro relatório
+
+          </button>
+
+        </div>
+
+      `;
+
+      lucide.createIcons();
+
+      return;
+
+    }
+
+
+    container.innerHTML =
+      filtered.map(renderReportCard).join("");
+
+
+    lucide.createIcons();
+
+  }
+
+
+  function renderReportCard(report) {
+
+    const typeNames = {
+
+      financeiro: "Financeiro",
+      performance: "Performance",
+      clientes: "Clientes",
+      projetos: "Projetos"
+
+    };
+
+
+    const typeIcons = {
+
+      financeiro: "dollar-sign",
+      performance: "trending-up",
+      clientes: "users",
+      projetos: "folder-kanban"
+
+    };
+
+
+    return `
+
+      <article
+        class="p-4 bg-white rounded-2xl
+        border border-slate-100 shadow-sm space-y-4">
+
+        <div class="flex items-center justify-between
+        border-b border-slate-100 pb-3">
+
+          <div class="flex items-center gap-3">
+
+            <div class="w-9 h-9 rounded-full
+            bg-blue-50 text-blue-600
+            flex items-center justify-center">
+
+              <i data-lucide="${typeIcons[report.type]}"
+                class="w-4 h-4"></i>
+
+            </div>
+
+            <div>
+
+              <h4 class="text-sm font-bold text-slate-900">
+                ${escapeHTML(report.name)}
+              </h4>
+
+              <p class="text-xs text-slate-400">
+                ${typeNames[report.type]}
+                ·
+                ${formatDate(report.createdAt)}
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="grid grid-cols-2 gap-3">
+
+          <div class="bg-slate-50 rounded-xl p-3">
+
+            <p class="text-[10px] text-slate-400">
+              Receita
+            </p>
+
+            <p class="font-bold text-sm mt-1">
+              Kz ${Number(report.revenue || 0)
+                .toLocaleString("pt-AO")}
+            </p>
+
+          </div>
+
+
+          <div class="bg-slate-50 rounded-xl p-3">
+
+            <p class="text-[10px] text-slate-400">
+              Estado
+            </p>
+
+            <p class="font-bold text-sm text-emerald-600 mt-1">
+              Registado
+            </p>
+
+          </div>
+
+        </div>
+
+
+        ${
+          report.description
+          ?
+          `
+            <p class="text-xs text-slate-500 leading-relaxed">
+              ${escapeHTML(report.description)}
+            </p>
+          `
+          :
+          `
+            <p class="text-xs text-slate-400 italic">
+              Sem observações.
+            </p>
+          `
+        }
+
+
+        <div class="grid grid-cols-3 gap-2 no-print">
+
+          <button
+            onclick="viewReport('${report.id}')"
+            class="py-2 bg-slate-50 hover:bg-slate-100
+            text-slate-700 text-xs rounded-xl
+            flex items-center justify-center gap-1">
+
+            <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+            Ver
+
+          </button>
+
+
+          <button
+            onclick="downloadReport('${report.id}')"
+            class="py-2 bg-emerald-50 hover:bg-emerald-100
+            text-emerald-600 text-xs rounded-xl
+            flex items-center justify-center gap-1">
+
+            <i data-lucide="download"
+              class="w-3.5 h-3.5"></i>
+            PDF
+
+          </button>
+
+
+          <button
+            onclick="deleteReport('${report.id}')"
+            class="py-2 bg-red-50 hover:bg-red-100
+            text-red-600 text-xs rounded-xl
+            flex items-center justify-center gap-1">
+
+            <i data-lucide="trash-2"
+              class="w-3.5 h-3.5"></i>
+            Apagar
+
+          </button>
+
+        </div>
+
+      </article>
+
+    `;
+
+  }
+
+
+  /* ============================
+     CRIAR
+  ============================ */
+
+  function openCreateReport() {
+
+    document
+      .getElementById("createModal")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("createModal")
+      .classList.add("flex");
+
+  }
+
+
+  function closeCreateReport() {
+
+    document
+      .getElementById("createModal")
+      .classList.add("hidden");
+
+    document
+      .getElementById("createModal")
+      .classList.remove("flex");
+
+  }
+
+
+  document
+    .getElementById("reportForm")
+    .addEventListener("submit", function(event) {
+
+      event.preventDefault();
+
+
+      const name =
+        document
+          .getElementById("reportName")
+          .value.trim();
+
+
+      const type =
+        document
+          .getElementById("reportType")
+          .value;
+
+
+      const revenue =
+        Number(
+          document
+            .getElementById("reportRevenue")
+            .value || 0
+        );
+
+
+      const description =
+        document
+          .getElementById("reportDescription")
+          .value.trim();
+
+
+      if (!name) {
+
+        showToast("Informe o nome do relatório.");
+
+        return;
+
+      }
+
+
+      const report = {
+
+        id:
+          crypto.randomUUID
+          ? crypto.randomUUID()
+          : Date.now().toString(),
+
+        name,
+
+        type,
+
+        revenue,
+
+        description,
+
+        createdAt:
+          new Date().toISOString()
+
+      };
+
+
+      reports.unshift(report);
+
+      saveReports();
+
+      updateKPIs();
+
+      renderReports();
+
+      closeCreateReport();
+
+      this.reset();
+
+      showToast("Relatório registado com sucesso.");
+
+    });
+
+
+  /* ============================
+     VISUALIZAR
+  ============================ */
+
+  function viewReport(id) {
+
+    const report =
+      reports.find(
+        item => item.id === id
+      );
+
+
+    if (!report) return;
+
+
+    currentReportId = id;
+
+
+    const typeNames = {
+
+      financeiro: "Financeiro",
+      performance: "Performance",
+      clientes: "Clientes",
+      projetos: "Projetos"
+
+    };
+
+
+    document.getElementById("viewTitle")
+      .textContent = report.name;
+
+
+    document.getElementById("viewContent")
+      .innerHTML = `
+
+        <div class="space-y-4">
+
+          <div>
+
+            <p class="text-xs text-slate-400">
+              Tipo
+            </p>
+
+            <p class="font-semibold">
+              ${typeNames[report.type]}
+            </p>
+
+          </div>
+
+
+          <div>
+
+            <p class="text-xs text-slate-400">
+              Data de criação
+            </p>
+
+            <p class="font-semibold">
+              ${formatDate(report.createdAt)}
+            </p>
+
+          </div>
+
+
+          <div>
+
+            <p class="text-xs text-slate-400">
+              Receita registada
+            </p>
+
+            <p class="font-bold text-lg">
+              Kz ${Number(report.revenue || 0)
+                .toLocaleString("pt-AO")}
+            </p>
+
+          </div>
+
+
+          <div>
+
+            <p class="text-xs text-slate-400 mb-1">
+              Observações
+            </p>
+
+            <div class="bg-slate-50 rounded-xl p-3
+            text-sm leading-relaxed">
+
+              ${
+                report.description
+                ?
+                escapeHTML(report.description)
+                :
+                "Sem observações registadas."
+              }
+
+            </div>
+
+          </div>
+
+        </div>
+
+      `;
+
+
+    document
+      .getElementById("viewModal")
+      .classList.remove("hidden");
+
+    document
+      .getElementById("viewModal")
+      .classList.add("flex");
+
+
+    lucide.createIcons();
+
+  }
+
+
+  function closeViewReport() {
+
+    document
+      .getElementById("viewModal")
+      .classList.add("hidden");
+
+    document
+      .getElementById("viewModal")
+      .classList.remove("flex");
+
+  }
+
+
+  /* ============================
+     PDF / IMPRESSÃO
+  ============================ */
+
+  function downloadReport(id) {
+
+    viewReport(id);
+
+    setTimeout(() => {
+
+      window.print();
+
+    }, 300);
+
+  }
+
+
+  function printCurrentReport() {
+
+    window.print();
+
+  }
+
+
+  /* ============================
+     PARTILHAR
+  ============================ */
+
+  async function shareCurrentReport() {
+
+    const report =
+      reports.find(
+        item => item.id === currentReportId
+      );
+
+
+    if (!report) return;
+
+
+    const text =
+
+      `GAG Visual System\n\n` +
+
+      `${report.name}\n` +
+
+      `Tipo: ${report.type}\n` +
+
+      `Receita: Kz ${Number(report.revenue || 0)
+        .toLocaleString("pt-AO")}\n` +
+
+      `Data: ${formatDate(report.createdAt)}`;
+
+
+    if (
+      navigator.share
+    ) {
+
+      try {
+
+        await navigator.share({
+
+          title: report.name,
+
+          text
+
+        });
+
+      } catch (error) {
+
+        // cancelado pelo utilizador
+
+      }
+
+    } else {
+
+      await navigator.clipboard.writeText(text);
+
+      showToast(
+        "Dados do relatório copiados."
+      );
+
+    }
+
+  }
+
+
+  /* ============================
+     APAGAR
+  ============================ */
+
+  function deleteReport(id) {
+
+    const report =
+      reports.find(
+        item => item.id === id
+      );
+
+
+    if (!report) return;
+
+
+    const confirmed =
+      confirm(
+        `Apagar o relatório "${report.name}"?`
+      );
+
+
+    if (!confirmed) return;
+
+
+    reports =
+      reports.filter(
+        item => item.id !== id
+      );
+
+
+    saveReports();
+
+    updateKPIs();
+
+    renderReports();
+
+    showToast(
+      "Relatório removido."
+    );
+
+  }
+
+
+  /* ============================
+     NAVEGAÇÃO
+  ============================ */
+
+  function navigate(section) {
+
+    const routes = {
+
+      dashboard:
+        "Dashboard",
+
+      crm:
+        "CRM",
+
+      orcamento:
+        "Orçamento",
+
+      portfolio:
+        "Portfólio",
+
+      relatorios:
+        "Relatórios"
+
+    };
+
+
+    if (section === "relatorios") {
+
+      return;
+
+    }
+
+
+    showToast(
+      `${routes[section]} — módulo ainda não ligado nesta página.`
+    );
+
+  }
+
+
+  /* ============================
+     UTILITÁRIOS
+  ============================ */
+
+  function formatDate(date) {
+
+    return new Date(date)
+      .toLocaleDateString(
+        "pt-AO",
+        {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric"
+        }
+      );
+
+  }
+
+
+  function escapeHTML(value) {
+
+    return String(value)
+
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+  }
+
+
+  function showToast(message) {
+
+    const toast =
+      document.getElementById("toast");
+
+
+    toast.textContent =
+      message;
+
+
+    toast.classList.remove("hidden");
+
+
+    setTimeout(() => {
+
+      toast.classList.add("hidden");
+
+    }, 2800);
+
+  }
+
+
+</script>
+
 </body>
 </html>
