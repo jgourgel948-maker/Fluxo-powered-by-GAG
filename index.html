@@ -10,7 +10,7 @@
 </head>
 <body class="bg-slate-50 font-sans text-slate-800 pb-20">
 
-    <!-- CABEÇALHO / IDENTIDADE VISUAL -->
+    <!-- CABEÇALHO -->
     <header class="bg-slate-900 text-white p-4 shadow-lg sticky top-0 z-50">
         <div class="max-w-md mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-3">
@@ -26,95 +26,88 @@
         </div>
     </header>
 
-    <!-- PAINEL PRINCIPAL -->
+    <!-- CONTEÚDO PRINCIPAL -->
     <main class="max-w-md mx-auto p-4 space-y-6">
 
-        <!-- DASHBOARD GENERAL -->
+        <!-- PAINEL GERAL -->
         <section id="tab-dashboard" class="space-y-4">
             <div>
                 <h2 class="text-xl font-bold text-slate-900">Painel Geral</h2>
-                <p class="text-xs text-slate-500">Visão consolidada da operação na nuvem Supabase.</p>
+                <p class="text-xs text-slate-500">Sincronizado em tempo real com o Supabase.</p>
             </div>
 
-            <!-- CARDS DE MÉTRICAS -->
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Receita Total</p>
+                    <p class="text-xs font-semibold text-slate-400 uppercase">Receita Total</p>
                     <p id="metric-revenue" class="text-lg font-black text-slate-800 mt-1">Kz 0</p>
                 </div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Clientes CRM</p>
+                    <p class="text-xs font-semibold text-slate-400 uppercase">Clientes CRM</p>
                     <p id="metric-clients" class="text-lg font-black text-slate-800 mt-1">0</p>
                 </div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Propostas Ativas</p>
+                    <p class="text-xs font-semibold text-slate-400 uppercase">Orçamentos</p>
                     <p id="metric-quotes" class="text-lg font-black text-slate-800 mt-1">0</p>
                 </div>
                 <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Projetos em Curso</p>
+                    <p class="text-xs font-semibold text-slate-400 uppercase">Projetos</p>
                     <p id="metric-projects" class="text-lg font-black text-slate-800 mt-1">0</p>
                 </div>
             </div>
 
-            <!-- AÇÕES RÁPIDAS -->
             <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-100 space-y-2">
-                <p class="text-xs font-bold text-indigo-900 uppercase">Ações Rápidas</p>
+                <p class="text-xs font-bold text-indigo-900 uppercase">Atalhos</p>
                 <div class="flex space-x-2">
-                    <button onclick="switchTab('crm')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold py-2.5 rounded-xl shadow transition">
-                        + Novo Cliente
-                    </button>
-                    <button onclick="switchTab('quotes')" class="flex-1 bg-white hover:bg-slate-50 text-indigo-900 text-xs font-semibold py-2.5 rounded-xl border border-indigo-200 transition">
-                        + Criar Proposta
-                    </button>
+                    <button onclick="switchTab('crm')" class="flex-1 bg-indigo-600 text-white text-xs font-semibold py-2.5 rounded-xl shadow">Novo Cliente</button>
+                    <button onclick="switchTab('quotes')" class="flex-1 bg-white text-indigo-900 text-xs font-semibold py-2.5 rounded-xl border border-indigo-200">Novo Orçamento</button>
                 </div>
             </div>
         </section>
 
-        <!-- SEÇÃO CRM -->
+        <!-- SECÇÃO CRM -->
         <section id="tab-crm" class="hidden space-y-4">
-            <h2 class="text-xl font-bold text-slate-900">Gestão de Clientes (CRM)</h2>
-            <form id="form-client" onsubmit="addClient(event)" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
-                <input type="text" id="client-name" placeholder="Nome do Cliente" required class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-600">
-                <input type="text" id="client-contact" placeholder="Contacto / Email" class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-600">
-                <button type="submit" class="w-full bg-slate-900 text-white font-bold text-xs py-3 rounded-xl hover:bg-slate-800 transition">Registar Cliente</button>
+            <h2 class="text-xl font-bold text-slate-900">Gestão de Clientes</h2>
+            <form onsubmit="addClient(event)" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+                <input type="text" id="client-name" placeholder="Nome do Cliente" required class="w-full text-xs p-3 rounded-xl border border-slate-200">
+                <input type="text" id="client-contact" placeholder="Contacto / Telefone" class="w-full text-xs p-3 rounded-xl border border-slate-200">
+                <button type="submit" class="w-full bg-slate-900 text-white font-bold text-xs py-3 rounded-xl">Registar Cliente</button>
             </form>
             <div id="list-clients" class="space-y-2"></div>
         </section>
 
-        <!-- SEÇÃO ORÇAMENTOS -->
+        <!-- SECÇÃO ORÇAMENTOS -->
         <section id="tab-quotes" class="hidden space-y-4">
             <h2 class="text-xl font-bold text-slate-900">Orçamentos & Propostas</h2>
-            <form id="form-quote" onsubmit="addQuote(event)" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
-                <input type="text" id="quote-title" placeholder="Título da Proposta" required class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-600">
-                <input type="text" id="quote-client" placeholder="Nome do Cliente" required class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-600">
-                <input type="number" id="quote-amount" placeholder="Valor (Kz)" required class="w-full text-xs p-3 rounded-xl border border-slate-200 focus:outline-none focus:border-indigo-600">
-                <button type="submit" class="w-full bg-slate-900 text-white font-bold text-xs py-3 rounded-xl hover:bg-slate-800 transition">Guardar Proposta</button>
+            <form onsubmit="addQuote(event)" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+                <input type="text" id="quote-title" placeholder="Título da Proposta" required class="w-full text-xs p-3 rounded-xl border border-slate-200">
+                <input type="text" id="quote-client" placeholder="Nome do Cliente" required class="w-full text-xs p-3 rounded-xl border border-slate-200">
+                <input type="number" id="quote-amount" placeholder="Valor (Kz)" required class="w-full text-xs p-3 rounded-xl border border-slate-200">
+                <button type="submit" class="w-full bg-slate-900 text-white font-bold text-xs py-3 rounded-xl">Guardar Proposta</button>
             </form>
             <div id="list-quotes" class="space-y-2"></div>
         </section>
 
     </main>
 
-    <!-- NAVEGAÇÃO INFERIOR -->
+    <!-- MENU INFERIOR -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-2 z-50">
         <div class="max-w-md mx-auto flex justify-around">
-            <button onclick="switchTab('dashboard')" class="flex flex-col items-center text-indigo-600 text-xs font-semibold">
+            <button onclick="switchTab('dashboard')" id="nav-dash" class="flex flex-col items-center text-indigo-600 text-xs font-semibold">
                 <i class="fa-solid fa-chart-pie text-lg mb-0.5"></i> Painel
             </button>
-            <button onclick="switchTab('crm')" class="flex flex-col items-center text-slate-400 hover:text-indigo-600 text-xs font-semibold">
+            <button onclick="switchTab('crm')" id="nav-crm" class="flex flex-col items-center text-slate-400 text-xs font-semibold">
                 <i class="fa-solid fa-users text-lg mb-0.5"></i> CRM
             </button>
-            <button onclick="switchTab('quotes')" class="flex flex-col items-center text-slate-400 hover:text-indigo-600 text-xs font-semibold">
-                <i class="fa-solid fa-file-invoice text-lg mb-0.5"></i> Orçamento
+            <button onclick="switchTab('quotes')" id="nav-quotes" class="flex flex-col items-center text-slate-400 text-xs font-semibold">
+                <i class="fa-solid fa-file-invoice text-lg mb-0.5"></i> Orçamentos
             </button>
         </div>
     </nav>
 
     <script>
-        // LIGAÇÃO SUPABASE
         const SUPABASE_URL = "https://kjemvkaxnxeaxdhbjzip.supabase.co";
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqZW12a2F4bnhlYXhkaGJqemlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MzY3NjcsImV4cCI6MjEwMjAxMjc2N30.nU-qBcuvpFGcur9pkNWq2mLnIhuVrH3nIfi42f4R3J4";
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         function switchTab(tabName) {
             document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
@@ -130,16 +123,72 @@
             }
         }
 
-        // CARREGAR DADOS
+        // ADICIONAR CLIENTE
+        async function addClient(e) {
+            e.preventDefault();
+            const name = document.getElementById('client-name').value;
+            const contact = document.getElementById('client-contact').value;
+
+            const { error } = await _supabase.from('clients').insert([{ name, contact }]);
+            if (error) {
+                alert("Erro ao gravar: " + error.message);
+            } else {
+                alert("Cliente registado com sucesso!");
+                document.getElementById('client-name').value = '';
+                document.getElementById('client-contact').value = '';
+                loadData();
+            }
+        }
+
+        // ADICIONAR ORÇAMENTO
+        async function addQuote(e) {
+            e.preventDefault();
+            const title = document.getElementById('quote-title').value;
+            const client = document.getElementById('quote-client').value;
+            const amount = parseFloat(document.getElementById('quote-amount').value);
+
+            const { error } = await _supabase.from('quotes').insert([{ title, client, amount }]);
+            if (error) {
+                alert("Erro ao gravar: " + error.message);
+            } else {
+                alert("Proposta guardada com sucesso!");
+                document.getElementById('quote-title').value = '';
+                document.getElementById('quote-client').value = '';
+                document.getElementById('quote-amount').value = '';
+                loadData();
+            }
+        }
+
+        // CARREGAR DADOS E ATUALIZAR LISTAS
         async function loadData() {
+            // Clientes
             const { data: clients } = await _supabase.from('clients').select('*');
+            if (clients) {
+                document.getElementById('metric-clients').innerText = clients.length;
+                let cHtml = '';
+                clients.forEach(c => {
+                    cHtml += `<div class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center text-xs">
+                        <div><p class="font-bold text-slate-800">${c.name}</p><p class="text-slate-400">${c.contact || 'Sem contacto'}</p></div>
+                    </div>`;
+                });
+                document.getElementById('list-clients').innerHTML = cHtml || '<p class="text-xs text-slate-400 text-center py-2">Sem clientes registados.</p>';
+            }
+
+            // Orçamentos
             const { data: quotes } = await _supabase.from('quotes').select('*');
-            
-            if (clients) document.getElementById('metric-clients').innerText = clients.length;
             if (quotes) {
                 document.getElementById('metric-quotes').innerText = quotes.length;
                 let total = quotes.reduce((acc, q) => acc + Number(q.amount || 0), 0);
                 document.getElementById('metric-revenue').innerText = "Kz " + total.toLocaleString();
+                
+                let qHtml = '';
+                quotes.forEach(q => {
+                    qHtml += `<div class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center text-xs">
+                        <div><p class="font-bold text-slate-800">${q.title}</p><p class="text-slate-400">Cliente: ${q.client}</p></div>
+                        <span class="font-black text-indigo-600">Kz ${Number(q.amount).toLocaleString()}</span>
+                    </div>`;
+                });
+                document.getElementById('list-quotes').innerHTML = qHtml || '<p class="text-xs text-slate-400 text-center py-2">Sem propostas registadas.</p>';
             }
         }
 
