@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GAG Visual System — Gestão Integrada</title>
+  <title>GAG Visual System — Gestão Integrada Supabase</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -30,7 +32,7 @@
           <span class="text-xs text-slate-500">Marketing Automation</span>
           <span id="connectionStatus" class="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            Base Local Ativa
+            Supabase Nuvem
           </span>
         </div>
       </div>
@@ -47,7 +49,7 @@
     <section class="flex justify-between items-start">
       <div>
         <h2 class="text-lg font-bold text-slate-900">Painel Geral</h2>
-        <p class="text-xs text-slate-500 mt-0.5">Visão consolidada da operação.</p>
+        <p class="text-xs text-slate-500 mt-0.5">Visão consolidada da operação na nuvem.</p>
       </div>
     </section>
 
@@ -88,7 +90,6 @@
     </section>
   </main>
 
-
   <!-- MÓDULO: CRM -->
   <main id="view-crm" class="view-section p-4 space-y-6 hidden">
     <section class="flex justify-between items-center">
@@ -103,7 +104,6 @@
 
     <section id="clientsList" class="space-y-3"></section>
   </main>
-
 
   <!-- MÓDULO: ORÇAMENTO -->
   <main id="view-orcamento" class="view-section p-4 space-y-6 hidden">
@@ -120,7 +120,6 @@
     <section id="quotesList" class="space-y-3"></section>
   </main>
 
-
   <!-- MÓDULO: PORTFÓLIO -->
   <main id="view-portfolio" class="view-section p-4 space-y-6 hidden">
     <section class="flex justify-between items-center">
@@ -135,7 +134,6 @@
 
     <section id="projectsList" class="space-y-3"></section>
   </main>
-
 
   <!-- MÓDULO: RELATÓRIOS -->
   <main id="view-relatorios" class="view-section p-4 space-y-6 hidden">
@@ -173,7 +171,6 @@
     <section id="reportsList" class="space-y-3"></section>
   </main>
 
-
   <!-- NAVEGAÇÃO INFERIOR -->
   <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-slate-100 py-2 px-2 z-30 no-print">
     <div class="flex items-center justify-around">
@@ -202,10 +199,9 @@
 
 </div>
 
+<!-- MODAIS -->
 
-<!-- MODAIS DE CRIAÇÃO -->
-
-<!-- MODAL: CLIENTE (CRM) -->
+<!-- MODAL: CLIENTE -->
 <div id="clientModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 no-print">
   <div class="bg-white rounded-2xl w-full max-w-md p-5">
     <div class="flex justify-between items-center mb-4">
@@ -273,7 +269,7 @@
   </div>
 </div>
 
-<!-- MODAL: PROJETO (PORTFÓLIO) -->
+<!-- MODAL: PROJETO -->
 <div id="projectModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50 no-print">
   <div class="bg-white rounded-2xl w-full max-w-md p-5">
     <div class="flex justify-between items-center mb-4">
@@ -364,28 +360,53 @@
 <!-- TOAST -->
 <div id="toast" class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs px-4 py-2.5 rounded-xl shadow-xl hidden z-50"></div>
 
-
 <script>
   /* ============================
-     ESTADO DA APLICAÇÃO
+     CONEXÃO SUPABASE
   ============================ */
-  let reports = JSON.parse(localStorage.getItem('gag_reports') || '[]');
-  let clients = JSON.parse(localStorage.getItem('gag_clients') || '[]');
-  let quotes = JSON.parse(localStorage.getItem('gag_quotes') || '[]');
-  let projects = JSON.parse(localStorage.getItem('gag_projects') || '[]');
+  const SUPABASE_URL = "https://kjemvkaxnxeaxdhbjzip.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtqZW12a2F4bnhlYXhkaGJqemlwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY0MzY3NjcsImV4cCI6MjEwMjAxMjc2N30.nU-qBcuvpFGcur9pkNWq2mLnIhuVrH3nIfi42f4R3J4";
+  const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let reports = [];
+  let clients = [];
+  let quotes = [];
+  let projects = [];
   let currentFilter = 'todos';
   let currentReportId = null;
 
-  document.addEventListener("DOMContentLoaded", () => {
-    renderAll();
+  document.addEventListener("DOMContentLoaded", async () => {
+    await fetchAllData();
     lucide.createIcons();
   });
 
-  function saveAll() {
-    localStorage.setItem('gag_reports', JSON.stringify(reports));
-    localStorage.setItem('gag_clients', JSON.stringify(clients));
-    localStorage.setItem('gag_quotes', JSON.stringify(quotes));
-    localStorage.setItem('gag_projects', JSON.stringify(projects));
+  async function fetchAllData() {
+    showToast("A carregar dados do Supabase...");
+    await Promise.all([fetchReports(), fetchClients(), fetchQuotes(), fetchProjects()]);
+    renderAll();
+  }
+
+  /* ============================
+     FETCH SUPABASE
+  ============================ */
+  async function fetchReports() {
+    const { data, error } = await _supabase.from('reports').select('*').order('created_at', { ascending: false });
+    if (!error && data) reports = data;
+  }
+
+  async function fetchClients() {
+    const { data, error } = await _supabase.from('clients').select('*').order('created_at', { ascending: false });
+    if (!error && data) clients = data;
+  }
+
+  async function fetchQuotes() {
+    const { data, error } = await _supabase.from('quotes').select('*').order('created_at', { ascending: false });
+    if (!error && data) quotes = data;
+  }
+
+  async function fetchProjects() {
+    const { data, error } = await _supabase.from('projects').select('*').order('created_at', { ascending: false });
+    if (!error && data) projects = data;
   }
 
   function renderAll() {
@@ -429,7 +450,7 @@
 
     const activity = document.getElementById('dashActivity');
     if (!reports.length && !clients.length && !quotes.length && !projects.length) {
-      activity.innerHTML = `<div class="p-4 border border-dashed rounded-xl text-center text-xs text-slate-400">Nenhum registo recente no sistema.</div>`;
+      activity.innerHTML = `<div class="p-4 border border-dashed rounded-xl text-center text-xs text-slate-400">Nenhum registo no banco de dados.</div>`;
       return;
     }
 
@@ -437,7 +458,7 @@
     reports.slice(0, 2).forEach(r => {
       itemsHtml += `<div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center text-xs">
         <div><p class="font-bold text-slate-800">${escapeHTML(r.name)}</p><p class="text-[10px] text-slate-400">Relatório · Kz ${Number(r.revenue).toLocaleString('pt-AO')}</p></div>
-        <span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Registado</span>
+        <span class="text-[10px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Nuvem</span>
       </div>`;
     });
 
@@ -454,25 +475,29 @@
   /* ============================
      CRM
   ============================ */
-  document.getElementById('clientForm').addEventListener('submit', function(e) {
+  document.getElementById('clientForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    clients.unshift({
-      id: Date.now().toString(),
+    const payload = {
       name: document.getElementById('clientName').value.trim(),
       contact: document.getElementById('clientContact').value.trim(),
       status: document.getElementById('clientStatus').value
-    });
-    saveAll();
-    renderAll();
-    closeModal('clientModal');
-    this.reset();
-    showToast('Cliente adicionado com sucesso.');
+    };
+    const { error } = await _supabase.from('clients').insert([payload]);
+    if (!error) {
+      showToast('Cliente guardado na nuvem.');
+      closeModal('clientModal');
+      this.reset();
+      await fetchClients();
+      renderAll();
+    } else {
+      showToast('Erro ao guardar cliente.');
+    }
   });
 
   function renderClients() {
     const list = document.getElementById('clientsList');
     if (!clients.length) {
-      list.innerHTML = `<div class="p-8 border border-dashed rounded-2xl text-center text-xs text-slate-400">Sem clientes registados.</div>`;
+      list.innerHTML = `<div class="p-8 border border-dashed rounded-2xl text-center text-xs text-slate-400">Sem clientes registados no Supabase.</div>`;
       return;
     }
     list.innerHTML = clients.map(c => `
@@ -490,35 +515,42 @@
     lucide.createIcons();
   }
 
-  function deleteClient(id) {
-    if (confirm('Remover este cliente?')) {
-      clients = clients.filter(c => c.id !== id);
-      saveAll(); renderAll(); showToast('Cliente removido.');
+  async function deleteClient(id) {
+    if (confirm('Remover este cliente da nuvem?')) {
+      await _supabase.from('clients').delete().eq('id', id);
+      await fetchClients();
+      renderAll();
+      showToast('Cliente removido.');
     }
   }
 
   /* ============================
      ORÇAMENTOS
   ============================ */
-  document.getElementById('quoteForm').addEventListener('submit', function(e) {
+  document.getElementById('quoteForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    quotes.unshift({
-      id: Date.now().toString(),
+    const payload = {
       title: document.getElementById('quoteTitle').value.trim(),
       client: document.getElementById('quoteClient').value.trim(),
       amount: Number(document.getElementById('quoteAmount').value || 0),
       status: document.getElementById('quoteStatus').value
-    });
-    saveAll(); renderAll();
-    closeModal('quoteModal');
-    this.reset();
-    showToast('Orçamento registado.');
+    };
+    const { error } = await _supabase.from('quotes').insert([payload]);
+    if (!error) {
+      showToast('Orçamento guardado na nuvem.');
+      closeModal('quoteModal');
+      this.reset();
+      await fetchQuotes();
+      renderAll();
+    } else {
+      showToast('Erro ao guardar orçamento.');
+    }
   });
 
   function renderQuotes() {
     const list = document.getElementById('quotesList');
     if (!quotes.length) {
-      list.innerHTML = `<div class="p-8 border border-dashed rounded-2xl text-center text-xs text-slate-400">Sem orçamentos registados.</div>`;
+      list.innerHTML = `<div class="p-8 border border-dashed rounded-2xl text-center text-xs text-slate-400">Sem orçamentos registados no Supabase.</div>`;
       return;
     }
     list.innerHTML = quotes.map(q => `
@@ -531,7 +563,7 @@
           <span class="text-[10px] font-semibold bg-amber-50 text-amber-600 px-2.5 py-1 rounded-full">${q.status}</span>
         </div>
         <div class="flex justify-between items-center pt-2 border-t border-slate-50 text-xs">
-          <span class="font-bold text-slate-900">Kz ${q.amount.toLocaleString('pt-AO')}</span>
+          <span class="font-bold text-slate-900">Kz ${Number(q.amount).toLocaleString('pt-AO')}</span>
           <button onclick="deleteQuote('${q.id}')" class="text-red-400 hover:text-red-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
         </div>
       </div>
@@ -539,28 +571,35 @@
     lucide.createIcons();
   }
 
-  function deleteQuote(id) {
-    if (confirm('Remover orçamento?')) {
-      quotes = quotes.filter(q => q.id !== id);
-      saveAll(); renderAll(); showToast('Orçamento removido.');
+  async function deleteQuote(id) {
+    if (confirm('Remover orçamento da nuvem?')) {
+      await _supabase.from('quotes').delete().eq('id', id);
+      await fetchQuotes();
+      renderAll();
+      showToast('Orçamento removido.');
     }
   }
 
   /* ============================
      PORTFÓLIO
   ============================ */
-  document.getElementById('projectForm').addEventListener('submit', function(e) {
+  document.getElementById('projectForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    projects.unshift({
-      id: Date.now().toString(),
+    const payload = {
       name: document.getElementById('projectName').value.trim(),
       category: document.getElementById('projectCategory').value.trim(),
       status: document.getElementById('projectStatus').value
-    });
-    saveAll(); renderAll();
-    closeModal('projectModal');
-    this.reset();
-    showToast('Projeto criado.');
+    };
+    const { error } = await _supabase.from('projects').insert([payload]);
+    if (!error) {
+      showToast('Projeto guardado na nuvem.');
+      closeModal('projectModal');
+      this.reset();
+      await fetchProjects();
+      renderAll();
+    } else {
+      showToast('Erro ao guardar projeto.');
+    }
   });
 
   function renderProjects() {
@@ -584,30 +623,36 @@
     lucide.createIcons();
   }
 
-  function deleteProject(id) {
-    if (confirm('Remover projeto?')) {
-      projects = projects.filter(p => p.id !== id);
-      saveAll(); renderAll(); showToast('Projeto removido.');
+  async function deleteProject(id) {
+    if (confirm('Remover projeto da nuvem?')) {
+      await _supabase.from('projects').delete().eq('id', id);
+      await fetchProjects();
+      renderAll();
+      showToast('Projeto removido.');
     }
   }
 
   /* ============================
      RELATÓRIOS
   ============================ */
-  document.getElementById('reportForm').addEventListener('submit', function(e) {
+  document.getElementById('reportForm').addEventListener('submit', async function(e) {
     e.preventDefault();
-    reports.unshift({
-      id: Date.now().toString(),
+    const payload = {
       name: document.getElementById('reportName').value.trim(),
       type: document.getElementById('reportType').value,
       revenue: Number(document.getElementById('reportRevenue').value || 0),
-      description: document.getElementById('reportDescription').value.trim(),
-      createdAt: new Date().toISOString()
-    });
-    saveAll(); renderAll();
-    closeModal('createModal');
-    this.reset();
-    showToast('Relatório registado com sucesso.');
+      description: document.getElementById('reportDescription').value.trim()
+    };
+    const { error } = await _supabase.from('reports').insert([payload]);
+    if (!error) {
+      showToast('Relatório registado no Supabase.');
+      closeModal('createModal');
+      this.reset();
+      await fetchReports();
+      renderAll();
+    } else {
+      showToast('Erro ao gravar relatório.');
+    }
   });
 
   function renderReports() {
@@ -629,7 +674,7 @@
         <div class="flex justify-between items-start">
           <div>
             <h4 class="font-bold text-sm text-slate-900">${escapeHTML(r.name)}</h4>
-            <p class="text-[11px] text-slate-400 capitalize">${r.type} · ${new Date(r.createdAt).toLocaleDateString('pt-AO')}</p>
+            <p class="text-[11px] text-slate-400 capitalize">${r.type} · ${new Date(r.created_at || Date.now()).toLocaleDateString('pt-AO')}</p>
           </div>
           <span class="font-bold text-xs text-slate-900">Kz ${Number(r.revenue).toLocaleString('pt-AO')}</span>
         </div>
@@ -670,10 +715,12 @@
     openModal('viewModal');
   }
 
-  function deleteReport(id) {
-    if (confirm('Remover este relatório?')) {
-      reports = reports.filter(r => r.id !== id);
-      saveAll(); renderAll(); showToast('Relatório removido.');
+  async function deleteReport(id) {
+    if (confirm('Remover este relatório da nuvem?')) {
+      await _supabase.from('reports').delete().eq('id', id);
+      await fetchReports();
+      renderAll();
+      showToast('Relatório removido.');
     }
   }
 
@@ -685,7 +732,7 @@
       try { await navigator.share({ title: report.name, text }); } catch (e) {}
     } else {
       await navigator.clipboard.writeText(text);
-      showToast('Dados copiados para a área de transferência.');
+      showToast('Dados copiados.');
     }
   }
 
